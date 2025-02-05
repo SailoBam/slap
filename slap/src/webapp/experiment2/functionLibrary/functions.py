@@ -62,23 +62,23 @@ class PathHandler():
         print("changeAngle Method")
         return html_changeAngle
     
-    def setDirection(SimpleSlapRequestHandler: slap): # : slap
-             content_length = int(slap.headers.get('Content-length'))
-             put_data = slap.rfile.read(content_length)
-             print(put_data.decode('utf-8'))
-             print(type(put_data))
-             print(put_data)
-             angle += int(put_data)
-             response_data = {"angle": angle}
-             print("Set Direction", response_data)
-             
-             response_json = json.dumps(response_data)
+    def setDirection(SimpleSlapRequestHandler: slap):
+        content_length = int(slap.headers.get('Content-length'))
+        put_data = slap.rfile.read(content_length)
+        print(put_data.decode('utf-8'))
+        print(type(put_data))
+        print(put_data)
+        angle += int(put_data)
+        response_data = {"angle": angle}
+        print("Set Direction", response_data)
+        
+        response_json = json.dumps(response_data)
 
-             # Send HTTP headers
-             self.send_response(200)
-             self.send_header("Content-Type", "application/json")
-             self.end_headers()
+        # Send HTTP headers
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json")
+        self.end_headers()
 
              # Send JSON data
-             self.wfile.write(response_json.encode())
+        self.wfile.write(response_json.encode())
         
