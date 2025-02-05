@@ -1,6 +1,6 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
-from functionLibrary.functions import SimpleSlapRequestHandler
+from .functionLibrary.functions import SimpleSlapRequestHandler
 import os
 
 handler_class = SimpleSlapRequestHandler
