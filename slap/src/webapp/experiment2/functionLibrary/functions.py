@@ -52,20 +52,7 @@ class SimpleSlapRequestHandler(BaseHTTPRequestHandler):
         global angle
         funcToCall = getattr(PathHandler, self.path.strip('/'))
         message = funcToCall()
-       
-
-    def do_POST(self):
-        
-        print("recieved POST request")
-        print(f"path: {self.path}")
-        print(f"headers: {self.headers}")
-        content_length = int(self.headers.get('Content-length'))
-        post_data = self.rfile.read(content_length)
-        print(post_data.decode('utf-8'))
-        self.send_response(200)
-        self.send_header('Content-type', 'text/html')
-        self.end_headers()
-
+      
 class PathHandler():
     def gettime():
          print("getTime Method")
@@ -75,7 +62,7 @@ class PathHandler():
         print("changeAngle Method")
         return html_changeAngle
     
-    def setDirection(SimpleSlapRequestHandler: slap):
+    def setDirection(SimpleSlapRequestHandler: slap): # : slap
              content_length = int(slap.headers.get('Content-length'))
              put_data = slap.rfile.read(content_length)
              print(put_data.decode('utf-8'))
