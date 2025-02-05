@@ -12,25 +12,31 @@ class SimpleSlapRequestHandler(BaseHTTPRequestHandler):
    
     
     def do_GET(self):
-        print("recieved GET request")
+        print("received GET request")
         print(f"path: {self.path}")
         print(f"headers: {self.headers}")
-        #Send a Response
+
         self.send_response(200)
         self.send_header("Content-Type", "text/html")
-        # insert message
-        #match[self.path]:
-            #case["/"]:
-                #message = html_default
-            #case["/getTime"]:
-                #message = html_getTime
-           #case["/changeAngle"]:
-                #message = html_changeAngle
-        print("calling " + self.path + " On PathHandler")
-        #funcToCall = getattr(PathHandler, self.path.strip('/'))
-        #message = funcToCall()
-        with open('slap/src/webapp/html/webpages/' + self.path, 'r') as read:
-            message = read.read()
+
+        if self.path == "/":
+            print("Path equals '/' ")
+            file_path = "slap/src/webapp/webpages/default.html"  # Default page
+        elif self.path == "/gettime":
+            file_path = "slap/src/webapp/html/webpages/getTime.html"
+        elif self.path == "/changeangle":
+            file_path = "slap/src/webapp/html/webpages/changeAngle.html"
+
+        try:
+            with open(file_path, 'r') as read:
+                message = read.read()
+        except FileNotFoundError:
+            self.send_response(404)
+            message = "<h1>404 Not Found</h1>"
+
+        self.send_header("Content-Length", str(len(message)))
+        self.end_headers()
+        self.wfile.write(message.encode("utf-8"))
 
         self.send_header("Content-Length", str(len(message)))
         self.send_header("User-Information", "Fetching module X. Please wait")
@@ -50,8 +56,14 @@ class SimpleSlapRequestHandler(BaseHTTPRequestHandler):
 
     def do_PUT(self):
         global angle
-        funcToCall = getattr(PathHandler, self.path.strip('/'))
-        message = funcToCall()
+        print(f"Received PUT request: {self.path}")
+        
+        # Instantiate the PathHandler class
+        path_handler = PathHandler()
+        
+        # Call the setDirection method from PathHandler
+        path_handler.setDirection(self)
+
       
 class PathHandler():
     def gettime():
@@ -62,23 +74,24 @@ class PathHandler():
         print("changeAngle Method")
         return html_changeAngle
     
-    def setDirection(SimpleSlapRequestHandler: slap):
-        content_length = int(slap.headers.get('Content-length'))
-        put_data = slap.rfile.read(content_length)
+    def setDirection(self, handler):
+        content_length = int(handler.headers.get('Content-length'))
+        put_data = handler.rfile.read(content_length)
         print(put_data.decode('utf-8'))
-        print(type(put_data))
-        print(put_data)
-        angle += int(put_data)
+
+        global angle  # Use the global angle variable
+        angle += int(put_data.decode('utf-8'))  # Update the angle value
+        
         response_data = {"angle": angle}
         print("Set Direction", response_data)
         
         response_json = json.dumps(response_data)
 
         # Send HTTP headers
-        self.send_response(200)
-        self.send_header("Content-Type", "application/json")
-        self.end_headers()
+        handler.send_response(200)
+        handler.send_header("Content-Type", "application/json")
+        handler.end_headers()
 
-             # Send JSON data
-        self.wfile.write(response_json.encode())
+        # Send JSON data
+        handler.wfile.write(response_json.encode())
         

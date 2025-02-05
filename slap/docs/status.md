@@ -20,7 +20,7 @@ TODO:
     Can serve a file - Working
 TODO:
 
-    Fix basic web server (experiment 2)
+    Fix basic web server (experiment 2) (404 Error with gettime and changeangle pages)
     Design iteration 2 of web page - This will include current direction, set direction, up and down button, start / stop button, record button
     Design iteration 3 of web app - This will include all bells and whistles
 
