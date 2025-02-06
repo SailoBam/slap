@@ -20,7 +20,6 @@ TODO:
     Can serve a file - Working
 TODO:
 
-    Fix basic web server (experiment 2) (404 Error with gettime and changeangle pages)
     Design iteration 2 of web page - This will include current direction, set direction, up and down button, start / stop button, record button
     Design iteration 3 of web app - This will include all bells and whistles
 
@@ -48,7 +47,7 @@ TODO:
     Created basic threading tests inlcuding using a simple web server one thread (without PID) - Working
 TODO:
 
-    Create worker threads for PID and seperated web server (fix webserver EXP 2 first : 3 TODO)
+    Create worker threads for PID and seperated web server
     Intergrate the PID boat simulator into a multi-threaded application
     Intergrate PID output to drive servo motor
 

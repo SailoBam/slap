@@ -1,0 +1,71 @@
+<html>
+    <script>      
+        function changeValue(c) {
+            const url = '/addDirection'; 
+            const data = c;
+            console.log("Inide changeValue", data)
+
+            fetch(url, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "text/html; charset=UTF-8"
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById("angle").textContent = data.angle;
+                })
+                .catch(error => {
+                    document.getElementById("angle").textContent = 
+                        "Error: " + error.message;
+                });
+        }
+    </script>
+    <script>      
+        function setValue(c) {
+            const url = '/setDirection'; 
+            const data = c;
+            console.log("Inide changeValue", data)
+
+            fetch(url, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "text/html; charset=UTF-8"
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById("angle").textContent = data.angle;
+                })
+                .catch(error => {
+                    document.getElementById("angle").textContent = 
+                        "Error: " + error.message;
+                });
+        }
+    </script>
+                    <head><title>Change Value</title></head>
+                    <body>
+                        <div>
+                            Angle = <div id = "angle">0</div>
+                        </div>
+                        <button onclick="changeValue(10)">+10</button>
+                        
+                        <button onclick="changeValue(-10)">-10</button><br><br>
+
+                        <label for="directionSet">Set Direction:</label>
+                        <input type="int" id="directionSet" name="directionSet">
+                        <button onclick="setValue(parseInt(document.getElementById('directionSet').value))">Set Direction</button>
+                    </body>
+                </html>
