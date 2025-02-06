@@ -18,10 +18,10 @@ TODO:
     Basic web server with PUSH, PUT, POST functions - Not Working
     Basic HTML page with javascript button - Working
     Can serve a file - Working
+    Design iteration 0 of web page - Includes current direction, set direction, up and down button - Working
 TODO:
 
-    Design iteration 2 of web page - This will include current direction, set direction, up and down button, start / stop button, record button
-    Design iteration 3 of web app - This will include all bells and whistles
+    Design iteration 1 of web app - This will include all bells and whistles including start/stop, record buttons, time
 
 ## 4. NMEA Reader
     NMEA Writer (Angle) - working
