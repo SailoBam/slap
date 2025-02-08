@@ -3,7 +3,7 @@ import json
 import os
 angle = 0
 class SimpleSlapRequestHandler(BaseHTTPRequestHandler):
-   
+    
     file_dir = os.path.join('slap', 'src', 'webapp', 'iterations', 'iteration0', 'html', 'webpages')
     
     def do_GET(self):
