@@ -3,9 +3,9 @@
 ## 1. Boat Simulation Model
     Simple motion dynamics example - working
     Simple boat dynamics example - 
+    boat dymanic maths - (almost done)
 TODO: 
 
-    Create boat dynamic maths
     Code boat simulator module (this must genertate heading as a function of time in response to rudder angle)
     
 ## 2. PID Controller
@@ -15,10 +15,11 @@ TODO:
 
     Run PID module against boat dynamics
 ## 3. Web App
-    Basic web server with PUSH, PUT, POST functions - Not Working
+    Basic web server with PUSH, PUT, POST functions -Working
     Basic HTML page with javascript button - Working
     Can serve a file - Working
     Design iteration 0 of web page - Includes current direction, set direction, up and down button - Working
+    Basic web app with images and rotation svg according to angle - working
 TODO:
 
     Design iteration 1 of web app - This will include all bells and whistles including start/stop, record buttons, time
@@ -29,6 +30,8 @@ TODO:
     NMEA Test (Angle, Position) - working
 
 ## 5. Database
+    basic database function library - working
+    basic database design drawing - complete
 TODO:
 
     Finalise database design 
