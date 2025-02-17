@@ -6,43 +6,34 @@ This questionaire is designed to identify user requirements for an auto pilot sy
 
 ### Background Information
 
-Please could you describe the type of boat that you have. Please outline its steer mechanism. please describe the different types of journey you make on your boat. Please outline your general sailing background and experience.
+#### Q1
+Please outline your general sailing background and experience.
 
+#### Q2 
+Please could you describe the type of boat that you have and outline its steer mechanisms.
+
+#### Q3 
+Please describe the different types of journeys you make on your boat.
+
+### Questions
 
 #### Q1
-What are the main issues with long distance passages on a boat?
-
-Imagine that you are on a long distance passage. Please outline in a simple story form what you would be doing on your boat leading up to the use of an auto pilot system. How and why you might interact with the autopilot during tha passage, and what would you expect to happen when you finish using the system?
+Imagine that you are on a passage. Please outline in a simple story form what you would be doing on your boat leading up to the use of an auto pilot system. How and why you might interact with the autopilot during the passage, and what would you expect to happen when you finish using the system?
 
 #### Q2
-Is there a similar solution to a self steering system that you've utilised and what were the up and down sides to that implementation?
-
-Have you experienced using any autopilot systems in the past, and if so please outline their basic operation. Please describe the strengths and weaknesses of these systems.
+Have you experienced using any autopilot systems in the past, and if so please can you say which products you have used and outline their basic operation. If possible please describe the strengths and weaknesses of these systems.
 
 #### Q3
-What useful functions would you prefer to see provided in the user interface?
-What do you believe are the most important features of an autopilot are? can you identify any important failings which I should be aware of? 
+What do you believe are the key features of an autopilot are? Can you identify any important failings which I should be aware of? 
 
 #### Q4
-What adjustments would you expect to make to the system as it is running?
-
-What key information should the system present on a user interface:
-- Before activation
-- During operation
-- At deactivation
+Using previous autopilot systems, how often did you need to adjust the system, and why, in order to maintain effective travel?
 
 #### Q5
-What are the core components that the system must include for effective use?
-
-Given that the system is dependant on a GPS, there may be an oppitunity to incorperate features from other devices which utilise a GPS such as a trip logger / tracker, can you suggest what features from these devices would be most benefitial if intergrated into the auto pilot?
+What adjustments would you expect to make to the system as it is running?
 
 #### Q6
-How would this system aid long passages?
-
-
-
-#### Q7
-
+Given that the system is dependant on a GPS, there is  an opportunity to incorporate features from other devices which utilise a GPS such as a trip logger / tracker, can you suggest what features from these devices would be most beneficial if integrated into the auto pilot?
 
 ### Refrences
 - https://cdn2.hubspot.net/hubfs/3909610/Gated%20%20Content/Requirement%20Gathering%20Questions.pdf
