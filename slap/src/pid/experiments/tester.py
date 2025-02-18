@@ -13,10 +13,10 @@ visual = Visual()
 # --- GAINS ---
 KP = 1
 KI = 0.75
-KD = 0
+KD = 0.2
 
-target = 0
-dt = 1
+target = 50
+dt = 0.5
 
 controller = PidController(KP, KI, KD)
 
@@ -26,7 +26,7 @@ def Main():
 
     while(True):
         power = controller.pid(pos, target, dt)
-        #print(power)
+        print(power)
         sim.update(power, dt)
         pos = sim.get_Current()
         visual.visual(pos)
