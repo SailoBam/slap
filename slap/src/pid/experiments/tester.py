@@ -1,11 +1,13 @@
 import sys
 import os
 import time
-from oneDRocket.rocketModel import Rocket
+from oneDRocket.rocketModel import Rocket as RocketSim
 from pidModule import PidController
 from plotter import Visual
-
-sim = Rocket()
+from boatDynamics.simulator import BoatSim
+from boatDynamics.simpleModel import iterate_Heading as iterate
+import math
+sim = BoatSim()
 visual = Visual()
 
 # --- GAINS ---
@@ -20,13 +22,13 @@ controller = PidController(KP, KI, KD)
 
 def Main():
 
-    pos = sim.getPos()
+    pos = sim.get_Current()
 
     while(True):
         power = controller.pid(pos, target, dt)
         #print(power)
         sim.update(power, dt)
-        pos = sim.getPos()
+        pos = sim.get_Current()
         visual.visual(pos)
         print(pos," ", power)
 

@@ -23,7 +23,7 @@ class Rocket():
             return thrust
         
 
-    def getPos(self):
+    def get_Current(self):
         return self.ycor
 
 

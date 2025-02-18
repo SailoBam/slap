@@ -12,14 +12,14 @@ if __name__ == "__main__":
             key = msvcrt.getch().decode('utf-8')  # Get the key
             print(f"Key pressed: {key}")
             if key == 'a':  # Exit condition
-                temp = tick(temp, rudderAngle)
+                temp = tick(temp, rudderAngle, 0.5)
             elif key == 'd':
-                temp = tick(temp, -rudderAngle)
+                temp = tick(temp, -rudderAngle, 0.5)
 
             if temp >= 360:
                 temp = temp - 360
-            elif temp <= -360:
-                temp = temp + 360
+            elif temp < 0:
+                temp = 360 + temp
             print(temp)
 
         
