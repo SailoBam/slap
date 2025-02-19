@@ -8,10 +8,9 @@ if __name__ == "__main__":
     temp = tick(heading, 45)
     print("This is your current heading: ")
     while True:
-        if msvcrt.kbhit():  # Check if a key was pressed
-            key = msvcrt.getch().decode('utf-8')  # Get the key
-            print(f"Key pressed: {key}")
-            if key == 'a':  # Exit condition
+        if msvcrt.kbhit():
+            key = msvcrt.getch().decode('utf-8')
+            if key == 'a':
                 temp = tick(temp, rudderAngle, 0.5)
             elif key == 'd':
                 temp = tick(temp, -rudderAngle, 0.5)
