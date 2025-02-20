@@ -1,0 +1,11 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "slap",
+            "database": "${workspaceFolder:slap}/slap.db"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
+}
