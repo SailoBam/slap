@@ -11,7 +11,6 @@ app = Flask(__name__)
 request_queue = queue.Queue()
 angle = 0
 
-app.config['SLAP'] = SlapStore()
 
 
 @app.route("/")
@@ -73,15 +72,6 @@ def addDirection():
         return jsonify({"error": str(e)}), 400
     
 
-@app.route('/submit', methods=['POST'])
-def submit():
-    store = app.config['SLAP']
-    print("Form Submitted")
-    name = request.form.get('name')  # Get 'name' field
-    model = request.form.get('model')  # Get 'model' field
-    boat = Boat(1,name,model,1,0,0)
-    #store.addBoat(boat)
-    return f"Received: Name = {name}, Model = {model}"
 
 # Function to run Flask in a separate thread
 def run_flask():
