@@ -12,13 +12,13 @@
         Angle = <div id="angle">0</div>
     </div>
     <button onclick="changeValue(10)">+10</button>
-
+    <!-- These buttons run the changeValue function in the javascript-->
     <button onclick="changeValue(-10)">-10</button><br><br>
 
     <label for="directionSet">Set Direction:</label>
     <input type="int" id="directionSet" name="directionSet">
     <button onclick="setValue(parseInt(document.getElementById('directionSet').value))">Set Direction</button><br><br>
-
+    <!-- This the is the SVG to display the compass and the two lines -->
     <svg width="200" height="200" xmlns="http://www.w3.org/2000/svg" >
        <image href="{{ url_for('static', filename='images/compass-rose.png') }}" x="0" y="0" width="200" height="200"/> 
         <line id = target

@@ -1,3 +1,5 @@
+#                               Project Entry Point                              # 
+
 from services.slapStore import SlapStore
 from control.autoPilot import AutoPilot
 from control.boatSim import BoatSim
@@ -8,16 +10,19 @@ import threading
 import time
 import atexit
 
-
+# Used for the decay equation in boatSim
 TIMECONSTANT = 0.5
 
 class Main():
 
     def __init__(self):
+        # Init an instance of needed componants
         self.boat_sim = BoatSim(TIMECONSTANT)
         self.gps = Gps(self.boat_sim)
         self.tiller_actuator = TillerActuator(self.boat_sim)
         self.auto_pilot = AutoPilot(self.gps, self.tiller_actuator)
+        # All arguments here import the instances into the other modules,
+        # ensuring only one common instance of each module is used
 
     def main(self):
 
