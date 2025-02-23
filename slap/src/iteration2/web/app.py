@@ -22,7 +22,7 @@ class WebServer:
         @app.route("/")
         def home():
             # Default Route
-            return render_template('changeangle.html')
+            return render_template('index.html')
 
         @app.route("/config")
         def config():
