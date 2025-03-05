@@ -16,21 +16,29 @@ TIMECONSTANT = 0.5
 class Main():
 
     def __init__(self):
-        # Init an instance of needed componants
+        # Init an instance of needed components
+        self.tiller_actuator = TillerActuator()
+        self.auto_pilot = AutoPilot()
+        self.gps = Gps()
         self.boat_sim = BoatSim(TIMECONSTANT)
-        self.gps = Gps(self.boat_sim)
-        self.tiller_actuator = TillerActuator(self.boat_sim)
-        self.auto_pilot = AutoPilot(self.gps, self.tiller_actuator)
-        # All arguments here import the instances into the other modules,
+
+
+        self.boat_sim.setGps(self.gps)
+        self.gps.setAutoPilot(self.auto_pilot)
+        self.auto_pilot.setTillerActuator(self.tiller_actuator)
+        self.tiller_actuator.setBoatSim(self.boat_sim)
+        
+        
+        # import the instances into the other modules,
         # ensuring only one common instance of each module is used
 
     def main(self):
 
-        # Init Control system
-        self.auto_pilot.start()
+        # Init BoatSim
+        self.boat_sim.start()
 
         # Ensure the controller stops when the application exits
-        atexit.register(self.auto_pilot.stop)
+        atexit.register(self.boat_sim.stop)
 
         #Create and start Flask web server
         webserver = WebServer(self.auto_pilot)
