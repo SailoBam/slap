@@ -3,14 +3,15 @@ import msvcrt
 import sys
 import os
 from threading import Thread
+import time
 
-
+# Used for the decay equatio
+TIMECONSTANT = 0.5
 
 class BoatSim:
 
-    def __init__(self, time_constant):
-        # Imports constants and contains the heading variable
-        self.time_constant = time_constant
+    def __init__(self):
+        # Imports the heading variable
         self.heading = 0
         self.running = False
 
@@ -27,20 +28,27 @@ class BoatSim:
         
 
     def dynamicsLoop(self):
+        
+        previousTime = 0
         while self.running == True:
             # Preforms one iteration of the boats movements and ensures its a usable value
-            self.heading = iterate(self.heading, self.rudderAngle, self.time_constant)
-            self.heading = round(self.heading)
-            if self.heading >= 360:
-                self.heading = self.heading - 360
-            elif self.heading < 0:
-                self.heading = 360 + self.heading
-            self.gps.setHeading(self.heading)
+
+            currentTimeMilli = int(round(time.time() * 1000))
+
+            if previousTime != 0:
+                dt = (currentTimeMilli - previousTime) / 10**3
+            else:
+                dt = 0
+
+            yawRate = (1 / TIMECONSTANT) * self.rudderAngle
+            newHead = (self.heading + (yawRate * dt))% 360 # ψ(t) = ψ(0) + ∫(r) dt      
+            self.gps.setHeading(newHead)
+            self.heading = newHead
+            previousTime = currentTimeMilli
     
     def setRudderAngle(self,angle):
         self.rudderAngle = angle
         
-    
     def stop(self):
         # Stops the system
         self.running = False 

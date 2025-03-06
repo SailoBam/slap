@@ -10,8 +10,7 @@ import threading
 import time
 import atexit
 
-# Used for the decay equation in boatSim
-TIMECONSTANT = 0.5
+
 
 class Main():
 
@@ -20,7 +19,7 @@ class Main():
         self.tiller_actuator = TillerActuator()
         self.auto_pilot = AutoPilot()
         self.gps = Gps()
-        self.boat_sim = BoatSim(TIMECONSTANT)
+        self.boat_sim = BoatSim()
 
 
         self.boat_sim.setGps(self.gps)

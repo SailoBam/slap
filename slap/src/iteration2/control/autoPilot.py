@@ -4,6 +4,7 @@ from control.pidModule import PidController
 from transducers.tillerActuator import TillerActuator
 from threading import Thread
 from utils.nmea.nmeaDecoder import Decoder
+from utils.headings import angularDiff
 
 
 # If the difference between the target and actual heading is greater that
@@ -45,7 +46,7 @@ class AutoPilot():
         # Recieves heading and decodes the NMEA string
         self.actual_heading = self.decoder.decodeAngle(heading)
         # Preforms one iteration of the PID controller
-        diff = self.getHeadingError(self.target_heading, self.actual_heading)
+        diff = angularDiff(self.actual_heading, self.target_heading)
 
         if abs(diff) <= LIMIT_OF_CONTROL:
             turn_mag = self.pid_controller.pid(self.actual_heading, self.target_heading, 0.01)

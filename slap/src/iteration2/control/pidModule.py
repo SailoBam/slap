@@ -1,3 +1,5 @@
+from utils.headings import angularDiff
+
 class PidController:
 
     def __init__(self,KP,KI,KD):
@@ -12,7 +14,7 @@ class PidController:
     def pid(self, pos: int, target: int, dt: float):
 
         # PROPORTIONAL-------
-        error = target - pos
+        error = angularDiff(pos, target)
         proportional = error
 
         # Intergral----------
