@@ -1,12 +1,13 @@
 from control.boatSim import BoatSim
 
+RUDDER_COEFFICIENT = 25
 
-class TillerActuator:
+class TillerActuator():
  
     def setBoatSim(self, boat_sim: BoatSim):
         self.boat_sim = boat_sim
 
-    def setAngle(self, angle):
+    def setTurnMag(self, turn_mag):
         # Preforms one iteration of the boat dynamics
         # to find the next angle on discrete time
-        self.boat_sim.setRudderAngle(angle)
+        self.boat_sim.setRudderAngle(RUDDER_COEFFICIENT * turn_mag)

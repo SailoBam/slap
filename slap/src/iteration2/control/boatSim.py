@@ -3,6 +3,9 @@ import msvcrt
 import sys
 import os
 from threading import Thread
+
+
+
 class BoatSim:
 
     def __init__(self, time_constant):
@@ -18,19 +21,19 @@ class BoatSim:
         # Starts the control system on a new thread
         if not self.running:
             self.running = True
-            self.thread = Thread(target=self.controlLoop, daemon=True)
+            self.thread = Thread(target=self.dynamicsLoop, daemon=True)
             self.thread.start()
             self.rudderAngle = 0
         
 
-    def controlLoop(self):
+    def dynamicsLoop(self):
         while self.running == True:
             # Preforms one iteration of the boats movements and ensures its a usable value
             self.heading = iterate(self.heading, self.rudderAngle, self.time_constant)
             self.heading = round(self.heading)
             if self.heading >= 360:
                 self.heading = self.heading - 360
-            elif self.heading <= 0:
+            elif self.heading < 0:
                 self.heading = 360 + self.heading
             self.gps.setHeading(self.heading)
     
