@@ -1,12 +1,12 @@
-from .simpleModel import iterate_Heading as iterate
 import msvcrt
 import sys
 import os
 from threading import Thread
 import time
+import math
 
-# Used for the decay equatio
-TIMECONSTANT = 0.5
+# Used for the decay equation
+TIMECONSTANT = 0.05
 
 class BoatSim:
 
@@ -29,24 +29,30 @@ class BoatSim:
 
     def dynamicsLoop(self):
         
-        previousTime = 0
+        self.previousTime = 0
         while self.running == True:
             # Preforms one iteration of the boats movements and ensures its a usable value
 
-            currentTimeMilli = int(round(time.time() * 1000))
+            self.currentTimeMilli = int(round(time.time() * 1000))
 
-            if previousTime != 0:
-                dt = (currentTimeMilli - previousTime) / 10**3
+            if self.previousTime != 0:
+                dt = (self.currentTimeMilli - self.previousTime) / 10**3
             else:
                 dt = 0
 
             yawRate = (1 / TIMECONSTANT) * self.rudderAngle
-            newHead = (self.heading + (yawRate * dt))% 360 # ψ(t) = ψ(0) + ∫(r) dt      
+
+
+            # ψ(t) = ψ(0) + δ * [t/T + (exp(-t/T) - 1)]
+
+            newHead = (self.heading + yawRate * (dt / TIMECONSTANT + (math.exp(-dt / TIMECONSTANT) - 1)))
+              
             self.gps.setHeading(newHead)
             self.heading = newHead
-            previousTime = currentTimeMilli
+
     
     def setRudderAngle(self,angle):
+        self.previousTime = self.currentTimeMilli
         self.rudderAngle = angle
         
     def stop(self):
