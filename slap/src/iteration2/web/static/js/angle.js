@@ -72,6 +72,12 @@ function updateTarget(a){
 
 }
 
+function updateTiller(a){
+    console.log("update Target: ", a)
+    line = document.getElementById("tiller")
+    line.setAttribute("transform", `rotate(${a}, 100, 100)`);
+}
+
 // Update the compass
 async function updateCompass() {
     const response = await fetch('/api/headings');
@@ -79,6 +85,7 @@ async function updateCompass() {
     const readings = await response.json();
     updateTarget(readings.target)
     updateHeading(readings.actual)
+    updateTiller(readings.tiller)
     
 }
 

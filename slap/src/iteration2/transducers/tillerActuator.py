@@ -10,4 +10,6 @@ class TillerActuator():
     def setTurnMag(self, turn_mag):
         # Preforms one iteration of the boat dynamics
         # to find the next angle on discrete time
-        self.boat_sim.setRudderAngle(RUDDER_COEFFICIENT * turn_mag)
+        angle = RUDDER_COEFFICIENT * turn_mag
+        self.boat_sim.setRudderAngle(angle)
+        return angle

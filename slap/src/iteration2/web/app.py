@@ -53,6 +53,8 @@ class WebServer:
         @app.route('/api/headings', methods=['GET'])
         def get_headings():
             # Returns Headings (Target and Actual)
+            headings = self.auto_pilot.getHeadings()
+            #print(headings['tiller'])
             return jsonify(self.auto_pilot.getHeadings())
     
 
