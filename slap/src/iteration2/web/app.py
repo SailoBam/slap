@@ -1,8 +1,9 @@
-from os import add_dll_directory
+import os
 from flask import Flask, request, render_template, jsonify, g
 from services.slapStore import SlapStore
 from services.slapStore import Boat
 from control.autoPilot import AutoPilot
+from utils.headings import compassify
 import threading
 import queue
 import time
@@ -68,13 +69,16 @@ class WebServer:
                 print("Received data:", change)
 
                 # Update desired heading, returns the new actual heading
-                heading = self.auto_pilot.getHeadings()
-                heading = heading['target']
-                heading = heading + int(change)
-                heading = self.auto_pilot.setHeading(heading)
+                headings = self.auto_pilot.getHeadings()
 
+                heading = headings['target']
+                heading = heading + int(change)
+                heading = compassify(heading)
+
+                heading = self.auto_pilot.setHeading(heading)
+               
                 # Return JSON response
-                response_data = {"angle": heading}
+                response_data = {"angle": str(heading)}
                 print("Heading", response_data)
 
                 return jsonify(response_data), 200

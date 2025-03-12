@@ -21,7 +21,7 @@ function changeValue(c) {
         .then(data => {
             console.log("Received response:", data);
             document.getElementById("angle").textContent = data.angle;
-            updateLine(data.angle)
+            updateTarget(data.angle)
         })
         .catch(error => {
             console.error("Error:", error);
