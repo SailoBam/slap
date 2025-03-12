@@ -4,15 +4,19 @@ from services.slapStore import SlapStore
 from services.slapStore import Boat
 from control.autoPilot import AutoPilot
 from utils.headings import compassify
+from services.logger import Logger
 import threading
 import queue
 import time
 
 class WebServer:
 
-    def __init__(self, auto_pilot: AutoPilot):
+    def __init__(self, auto_pilot: AutoPilot, logger: Logger):
         # Importing the Auto Pilot instance
         self.auto_pilot = auto_pilot
+        self.logger = logger
+        self.logging = False
+
         
 
     def create_server(self):
@@ -55,7 +59,7 @@ class WebServer:
         @app.route('/api/headings', methods=['GET'])
         def get_headings():
             # Returns Headings (Target and Actual)
-            headings = self.auto_pilot.getHeadings()
+            #headings = self.auto_pilot.getHeadings()
             #print(headings['tiller'])
             return jsonify(self.auto_pilot.getHeadings())
     
@@ -87,7 +91,26 @@ class WebServer:
             except Exception as e:
                 print(f"Error processing request: {str(e)}")
                 return jsonify({"error": str(e)}), 400
-            
+        
+        @app.route('/api/toggleLogging', methods=['GET'])
+        def toggleLogging():
+            try:
+
+                if self.logger.isRunning():
+                    self.logger.stop()
+                else:
+                    self.logger.start()
+
+                status = {
+                'status': self.logger.isRunning(),
+                'tripName': "LogName"
+                }
+
+                return jsonify(status), 200
+
+            except Exception as e:
+                print(f"Error processing request to toggle logging: {str(e)}")
+                return jsonify({"error": str(e)}), 400
 
         return app
         

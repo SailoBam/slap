@@ -9,12 +9,5 @@ def angularDiff(a, b):
 
 def compassify(input):
     print("Compassing: ", input)
-    if input == 360:
-        output = 0
-    elif input > 360:
-        output = input - 360
-    elif input < 0:
-        output = 360 + input
-    else:
-        output = input
-    return output
+    
+    return input% 360

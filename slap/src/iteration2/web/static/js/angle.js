@@ -80,15 +80,32 @@ function updateTiller(a){
 
 // Update the compass
 async function updateCompass() {
-    const response = await fetch('/api/headings');
+    response = await fetch('/api/headings');
     console.log(response)
-    const readings = await response.json();
+    readings = await response.json();
     updateTarget(readings.target)
     updateHeading(readings.actual)
     updateTiller(readings.tiller)
     
 }
 
+async function toggleLogging(){
+    response = await fetch('/api/toggleLogging');
+    
+    logging_status = await response.json();
+    console.log(logging_status.status)
+    button = document.getElementById('loggingButton')
+    if (logging_status.status) {
+        console.log("set to STOP")
+        button.textContent = "STOP"
+        button.style.backgroundColor = "red"
+    }
+    else {
+        console.log("set to START")
+        button.textContent = "START"
+        button.style.backgroundColor = "green"
+    }
+}
 // Initial load
 updateCompass();
 
