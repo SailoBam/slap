@@ -1,3 +1,4 @@
+from os import add_dll_directory
 from flask import Flask, request, render_template, jsonify, g
 from services.slapStore import SlapStore
 from services.slapStore import Boat
@@ -64,11 +65,12 @@ class WebServer:
                 # increments the target heading based on users input in web page
                 # Get data from request
                 change = request.get_data().decode('utf-8')
-                print("Received data:", heading)
+                print("Received data:", change)
 
                 # Update desired heading, returns the new actual heading
-                heading = self.auto_pilot.getHeading()
-                heading += change
+                heading = self.auto_pilot.getHeadings()
+                heading = heading['target']
+                heading = heading + int(change)
                 heading = self.auto_pilot.setHeading(heading)
 
                 # Return JSON response
