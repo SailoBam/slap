@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit config</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="form-container">
+        <h2>Edit config</h2>
+        <form action="{{ url_for('save') }}" method="POST">
+            <input type="hconfigIdden" name="configId" value="{{ config.configId }}">
+            
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" configId="name" name="name" value="{{ config.name }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="p">P:</label>
+                <input type="number" configId="p" name="p" value="{{ config.p }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="i">I:</label>
+                <input type="number" configId="i" name="i" value="{{ config.i }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="d">D:</label>
+                <input type="number" configId="d" name="d" value="{{ config.d }}" required>
+            </div>
+            
+            <div class="buttons">
+                <button type="submit" class="button save">Save</button>
+                <a href="{{ url_for('index') }}" class="button cancel" style="text-decoration: none;">Cancel</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html> 

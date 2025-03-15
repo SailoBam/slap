@@ -2,31 +2,30 @@ import sqlite3
 
 
 # --- All Classes possible to put into the database ---
-class Boat():
+class Config():
 
-    def __init__(self, id: int,  name: str, model: str, proportional: int, integral: int, differential: int):
+    def __init__(self, id: int,  name: str, proportional: int, integral: int, differential: int):
         # Contains and assigns the values for the Boat type
         self.name = name
-        self.boatId = id
-        self.model = model
+        self.configId = id
         self.proportional = proportional
         self.integral = integral
         self.differential = differential
 
 class Sensor():
 
-    def __init__(self, id: int, boat: int, name: str, model: str):
+    def __init__(self, id: int, config: int, name: str, model: str):
         # Contains and assigns the values for the Sensor type
         self.sensorId = id
-        self.boatId = boat
+        self.configId = config
         self.sensorName = name
         self.sensorModel = model
 
 class Trip():
-    def __init__(self, trip_id: int, boat_id: int, time_started: str, time_ended: str, date_started: str, date_ended: str, distance_travelled: float):
+    def __init__(self, trip_id: int, config_id: int, time_started: str, time_ended: str, date_started: str, date_ended: str, distance_travelled: float):
         # Contains and assigns the values for the Trip type
         self.tripId = trip_id
-        self.boatId = boat_id
+        self.configId = config_id
         self.timeStarted = time_started
         self.timeEnded = time_ended
         self.dateStarted = date_started
@@ -47,18 +46,18 @@ class SlapStore():
     def __init__(self):
         # Set up database and creates all necessary tables
         print("Creating Database")
-        self.connection = sqlite3.connect("slap.db")
+        self.connection = sqlite3.connect("slap.db", check_same_thread=False)
+        self.connection.row_factory = sqlite3.Row
         self.cursor = self.connection.cursor()
 
-        # Boat table
+        # Config table
         self.cursor.execute('''
-            CREATE TABLE IF NOT EXISTS BOATS (
-                boatId INTEGER PRIMARY KEY,
-                boatName TEXT NOT NULL,
-                boatModel TEXT NOT NULL,
-                proportional INTEGER NOT NULL,
-                integral INTEGER NOT NULL,
-                differential INTEGER NOT NULL
+            CREATE TABLE IF NOT EXISTS CONFIGS (
+                configId INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                p INTEGER NOT NULL,
+                i INTEGER NOT NULL,
+                d INTEGER NOT NULL
             )
         ''')
 
@@ -66,11 +65,11 @@ class SlapStore():
         self.cursor.execute('''
             CREATE TABLE IF NOT EXISTS Sensor (
                 sensorId INTEGER PRIMARY KEY,
-                boatId INTEGER NOT NULL,
+                configId INTEGER NOT NULL,
                 sensorName TEXT NOT NULL,
                 sensorType TEXT NOT NULL,
                 dataType TEXT NOT NULL,
-                FOREIGN KEY (boatId) REFERENCES BOATS(boatId) ON DELETE CASCADE
+                FOREIGN KEY (configId) REFERENCES CONFIGS(configId) ON DELETE CASCADE
             )
         ''')
 
@@ -78,14 +77,14 @@ class SlapStore():
         self.cursor.execute('''
             CREATE TABLE IF NOT EXISTS Trip (
                 tripId INTEGER,
-                boatId INTEGER NOT NULL,
+                configId INTEGER NOT NULL,
                 timeStarted TEXT NOT NULL,
                 timeEnded TEXT NOT NULL,
                 dateStarted DATE NOT NULL,
                 dateEnded DATE NOT NULL,
                 distanceTravelled FLOAT NOT NULL,
-                PRIMARY KEY (tripId, boatId),
-                FOREIGN KEY (boatId) REFERENCES BOATS(boatId) ON DELETE CASCADE
+                PRIMARY KEY (tripId, configId),
+                FOREIGN KEY (configId) REFERENCES CONFIGS(configId) ON DELETE CASCADE
             )
         ''')
 
@@ -105,31 +104,36 @@ class SlapStore():
 
 #        ---All service functions for the database---
 
-    def addBoat(self, boat: Boat): 
-        # Inserts a boat into the database
-        self.cursor.execute(f"INSERT INTO BOATS (boatId, boatName, boatModel, proportional, integral, differential) VALUES ('{boat.boatId}','{boat.name}','{boat.model}','{boat.proportional}','{boat.integral}','{boat.differential}')")
+    def newConfig(self, config: Config): 
+        # Inserts a config into the database
+        self.cursor.execute(f"INSERT INTO CONFIGS (name, p, i, d) VALUES ('{config.name}','{config.p}','{config.i}','{config.d}')")
         self.connection.commit()
     
     def getGains(self,id: int):
         # Returns all PID gains stored in the Boat instance
         gains = {}
         # Retrieves all data and stores it as a dictionary
-        self.cursor.execute(f"SELECT proportional, integral, differential FROM BOATS WHERE boatId = '{id}'")
+        self.cursor.execute(f"SELECT p, i, d FROM CONFIGS WHERE configId = '{id}'")
         columns = [desc[0] for desc in self.cursor.description]
         for row in self.cursor.fetchall():
             row_dict = dict(zip(columns, row))
             gains = row_dict 
         return gains
 
-    def getBoat(self,name: str):
-        # Returns all information on a boat using its name as the identifier
-        self.cursor.execute(f"SELECT * FROM BOATS WHERE boatName == '{name}'")
+    def listConfigs(self):
+        self.cursor.execute(f"SELECT * FROM CONFIGS")
+        rows = self.cursor.fetchall()
+        return [dict(row) for row in rows]
+
+    def getConfig(self,name: str):
+        # Returns all information on a config using its name as the identifier
+        self.cursor.execute(f"SELECT * FROM CONFIGS WHERE configName == '{name}'")
         row = self.cursor.fetchone()
         return row
     
     def addSensor(self, sensor: Sensor): 
         # Inserts a Sensor into the database
-        self.cursor.execute(f"INSERT INTO Sensor (sensorId, boatId, sensorName, sensorType, dataType) VALUES ('{sensor.sensorId}', '{sensor.boatId}', '{sensor.sensorName}', '{sensor.sensorModel}', 'N/A')")
+        self.cursor.execute(f"INSERT INTO Sensor (sensorId, configId, sensorName, sensorType, dataType) VALUES ('{sensor.sensorId}', '{sensor.configId}', '{sensor.sensorName}', '{sensor.sensorModel}', 'N/A')")
         self.connection.commit()
 
     def getSensor(self, sensor_name: str):
@@ -140,12 +144,12 @@ class SlapStore():
 
     def addTrip(self, trip: Trip):
         # Inserts a Trip into the database  
-        self.cursor.execute(f"INSERT INTO Trip (tripId, boatId, timeStarted, timeEnded, dateStarted, dateEnded, distanceTravelled) VALUES ('{trip.tripId}', '{trip.boatId}', '{trip.timeStarted}', '{trip.timeEnded}', '{trip.dateStarted}', '{trip.dateEnded}', '{trip.distanceTravelled}')")
+        self.cursor.execute(f"INSERT INTO Trip (tripId, configId, timeStarted, timeEnded, dateStarted, dateEnded, distanceTravelled) VALUES ('{trip.tripId}', '{trip.configId}', '{trip.timeStarted}', '{trip.timeEnded}', '{trip.dateStarted}', '{trip.dateEnded}', '{trip.distanceTravelled}')")
         self.connection.commit()
 
-    def getTrip(self, trip_id: int, boat_id: int):
+    def getTrip(self, trip_id: int, config_id: int):
         # returns all information on a trip using the tripId and BoatId as the identifier
-        self.cursor.execute(f"SELECT * FROM Trip WHERE tripId == {trip_id} AND boatId == {boat_id}")
+        self.cursor.execute(f"SELECT * FROM Trip WHERE tripId == {trip_id} AND configId == {config_id}")
         row = self.cursor.fetchone()
         return row
 

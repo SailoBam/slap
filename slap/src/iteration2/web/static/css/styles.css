@@ -1,0 +1,89 @@
+/* Table styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+tr:hover {
+    background-color: #f5f5f5;
+}
+
+/* Button and action styles */
+.actions {
+    display: flex;
+    gap: 10px;
+}
+
+.button {
+    padding: 5px 10px;
+    text-decoration: none;
+    color: white;
+    border-radius: 3px;
+    cursor: pointer;
+    border: none;
+}
+
+.edit {
+    background-color: #4CAF50;
+}
+
+.select {
+    background-color: #008CBA;
+}
+
+.selected {
+    background-color: #e6f3ff;
+}
+
+/* Form styles */
+.form-container {
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    box-sizing: border-box;
+}
+
+.buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.save {
+    background-color: #4CAF50;
+    padding: 10px 20px;
+}
+
+.cancel {
+    background-color: #f44336;
+    padding: 10px 20px;
+} 

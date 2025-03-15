@@ -22,6 +22,7 @@ class Main():
         self.gps = Gps()
         self.boat_sim = BoatSim()
         self.logger = Logger()
+        self.store = SlapStore()
 
 
         self.boat_sim.setGps(self.gps)
@@ -42,7 +43,7 @@ class Main():
 
         #Create and start Flask web server
         webserver = WebServer(self.auto_pilot, self.logger) 
-        app = webserver.create_server()
+        app = webserver.create_server(self.store)
 
         app.run(debug=True, use_reloader=False)
 

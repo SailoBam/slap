@@ -1,13 +1,14 @@
 import os
-from flask import Flask, request, render_template, jsonify, g
+from flask import Flask, request, render_template, jsonify, g, redirect, url_for
 from services.slapStore import SlapStore
-from services.slapStore import Boat
+from services.slapStore import Config
 from control.autoPilot import AutoPilot
 from utils.headings import compassify
 from services.logger import Logger
 import threading
 import queue
 import time
+import json
 
 class WebServer:
 
@@ -19,11 +20,24 @@ class WebServer:
 
         
 
-    def create_server(self):
+    def create_server(self, store: SlapStore):
 
         # Creating instances of Flask and the Database service
         app = Flask(__name__)
-        store = SlapStore()
+        self.store = store
+        # Load boat data
+
+        def load_configs():
+            f = store.listConfigs()
+            print({'configs': f})
+            
+            #with open('C:/Users/franc/vscode/projects/slap/slap/src/iteration2/data.json', 'r') as f:
+           #    print(json.load(f))
+            return {'configs': f}
+
+        def save_configs(data):
+            with open('C:/Users/franc/vscode/projects/slap/slap/src/iteration2/data.json', 'w') as f:
+                json.dump(data, f, indent=4)
 
         @app.route("/")
         def home():
@@ -111,6 +125,50 @@ class WebServer:
             except Exception as e:
                 print(f"Error processing request to toggle logging: {str(e)}")
                 return jsonify({"error": str(e)}), 400
+            
+            # Boat database roots 
+
+        @app.route('/configs')
+        def index():
+            data = load_configs()
+            return render_template('configs.html', configs = data["configs"])
+
+        @app.route('/edit/<int:configId>', methods=['GET'])
+        def edit(configId):
+            if configId == 0:
+                config = {'configId': 0, 'name': 'New Config', 'p': '0', 'i': '0', 'd': '0'}
+                return render_template('edit.html', config=config)
+
+            else:
+                data = load_configs()
+                config = next((p for p in data['configs'] if p['configId'] == configId), None)
+                if config:
+                    return render_template('edit.html', config=config)
+                return redirect(url_for('index'))
+
+        @app.route('/save', methods=['POST'])
+        def save():
+            data = load_configs()
+            config_configId = int(request.form['configId'])
+            if config_configId == 0:
+                config = Config(0, str(request.form['name']),int(request.form['p']),int(request.form['i']),int(request.form['d']))
+                self.store.newConfig(config)
+            updated_config = {
+                'configId': config_configId,
+                'name': request.form['name'],
+                'p': request.form['p'],
+                'i': request.form['i'],
+                'd': request.form['d']
+            }
+            
+            data['configs'] = [updated_config if p['configId'] == config_configId else p for p in data['configs']]
+            save_configs(data)
+            return redirect(url_for('index')) 
+
+        @app.route('/select/<int:configId>', methods=['POST'])
+        def select(configId):
+            # This route will be called via AJAX when a row is selected
+            return jsonify({'message': f'Selected config with ID: {configId}'})
 
         return app
         

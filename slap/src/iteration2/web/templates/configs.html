@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SLAP Config</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <h1>SLAP Config</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>P</th>
+                <th>I</th>
+                <th>D</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for config in configs %}
+            <tr configId="row-{{ config.configId }}">
+                <td>{{ config.name }}</td>
+                <td>{{ config.p }}</td>
+                <td>{{ config.i }}</td>
+                <td>{{ config.d }}</td>
+                <td class="actions">
+                    <a href="{{ url_for('edit', configId=config.configId) }}" class="button edit">Edit</a>
+                    <button onclick="selectconfig({{ config.configId }})" class="button select">Select</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div>
+        <a href="{{ url_for('edit', configId=0) }}" class="button edit">New Config</a>
+    </div>
+
+    <script>
+        function selectconfig(configId) {
+            // Remove previously selected row highlighting
+            document.querySelectorAll('tr').forEach(row => {
+                row.classList.remove('selected');
+            });
+            
+            // Highlight the selected row
+            document.getElementById('row-' + configId).classList.add('selected');
+            
+            // Send the selection to the server
+            fetch('/select/' + configId, {
+                method: 'POST',
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.message);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html> 

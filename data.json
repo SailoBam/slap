@@ -1,0 +1,22 @@
+{
+    "people": [
+        {
+            "id": 1,
+            "name": "John Doe",
+            "dob": "1990-01-07",
+            "job": "Software Engineer"
+        },
+        {
+            "id": 2,
+            "name": "Jane Smith",
+            "dob": "1985-03-22",
+            "job": "Data Scientist"
+        },
+        {
+            "id": 3,
+            "name": "Bob Johnson",
+            "dob": "1992-11-30",
+            "job": "Project Manager"
+        }
+    ]
+}
