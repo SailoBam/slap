@@ -11,8 +11,6 @@ import threading
 import time
 import atexit
 
-
-
 class Main():
 
     def __init__(self):
@@ -29,6 +27,7 @@ class Main():
         self.gps.setAutoPilot(self.auto_pilot)
         self.auto_pilot.setTillerActuator(self.tiller_actuator)
         self.tiller_actuator.setBoatSim(self.boat_sim)
+        self.logger.setStore(self.store)
         
         # import the instances into the other modules,
         # ensuring only one common instance of each module is used

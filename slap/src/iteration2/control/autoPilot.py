@@ -1,5 +1,5 @@
 import control.pidModule
-from services.slapStore import SlapStore
+from services.slapStore import SlapStore, Config
 from control.pidModule import PidController
 from transducers.tillerActuator import TillerActuator
 from threading import Thread
@@ -18,7 +18,10 @@ class AutoPilot():
         # Creates all needed variable for the controller
         self.thread = None
         self.data_store = SlapStore()
-        self.pid_controller = PidController( ( 1/LIMIT_OF_CONTROL ) ,0.5 ,0)
+        self.proportional = 0
+        self.integral = 0
+        self.differential = 0 
+        self.pid_controller = PidController( self.proportional, self.integral, self.differential)
 
         self.target_heading = 0
         self.decoder = Decoder()
@@ -72,5 +75,7 @@ class AutoPilot():
             error = (target - heading) - 360
         return error
     
+    def setPidValues(self, config: Config):
+        self.pid_controller.setGains(config)
     
     

@@ -19,12 +19,12 @@
             {% for config in configs %}
             <tr configId="row-{{ config.configId }}">
                 <td>{{ config.name }}</td>
-                <td>{{ config.p }}</td>
-                <td>{{ config.i }}</td>
-                <td>{{ config.d }}</td>
+                <td>{{ config.proportional }}</td>
+                <td>{{ config.integral }}</td>
+                <td>{{ config.differential }}</td>
                 <td class="actions">
                     <a href="{{ url_for('edit', configId=config.configId) }}" class="button edit">Edit</a>
-                    <button onclick="selectconfig({{ config.configId }})" class="button select">Select</button>
+                    <button onclick="selectconfig({{config.configId}})" class="button select">Select</button>
                 </td>
             </tr>
             {% endfor %}
@@ -37,12 +37,13 @@
     <script>
         function selectconfig(configId) {
             // Remove previously selected row highlighting
+            console.log(configId)
             document.querySelectorAll('tr').forEach(row => {
                 row.classList.remove('selected');
             });
             
             // Highlight the selected row
-            document.getElementById('row-' + configId).classList.add('selected');
+            //document.getElementById('row-' + configId).classList.add('selected');
             
             // Send the selection to the server
             fetch('/select/' + configId, {

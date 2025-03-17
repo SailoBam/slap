@@ -1,5 +1,5 @@
 from utils.headings import angularDiff
-
+from services.slapStore import Config
 class PidController:
 
     def __init__(self,KP,KI,KD):
@@ -58,3 +58,10 @@ class PidController:
         self.elapsed = 0
         self.lastPos = None
         self.previous_time = 0
+
+    def setGains(self, config: Config):
+        print("setting gains")
+        self.kp = config['proportional']
+        self.ki = config['integral']
+        self.kd = config['differential']
+        self.reset()

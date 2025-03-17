@@ -1,6 +1,6 @@
 from threading import Thread
 import time
-
+from services.slapStore import SlapStore, Trip
 class Logger:
 
     def __init__(self):
@@ -12,6 +12,8 @@ class Logger:
         # slapstore.addTrip()
         if not self.running:
             self.running = True
+            trip = Trip(0,)
+            self.store.createTrip()
             self.thread = Thread(target=self.loggerLoop, daemon=True)
             self.thread.start()
 
@@ -30,3 +32,6 @@ class Logger:
     
     def isRunning(self):
         return self.running
+    
+    def setStore(self, store: SlapStore):
+        self.store = store

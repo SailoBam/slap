@@ -136,38 +136,42 @@ class WebServer:
         @app.route('/edit/<int:configId>', methods=['GET'])
         def edit(configId):
             if configId == 0:
-                config = {'configId': 0, 'name': 'New Config', 'p': '0', 'i': '0', 'd': '0'}
+                config = {'configId': 0, 'name': 'New Config', 'proportional': '0', 'integral': '0', 'differential': '0'}
                 return render_template('edit.html', config=config)
 
             else:
                 data = load_configs()
-                config = next((p for p in data['configs'] if p['configId'] == configId), None)
+                config = next((proportional for proportional in data['configs'] if proportional['configId'] == configId), None)
                 if config:
                     return render_template('edit.html', config=config)
                 return redirect(url_for('index'))
 
         @app.route('/save', methods=['POST'])
         def save():
-            data = load_configs()
             config_configId = int(request.form['configId'])
+            print(config_configId)
             if config_configId == 0:
-                config = Config(0, str(request.form['name']),int(request.form['p']),int(request.form['i']),int(request.form['d']))
+                config = Config(0, str(request.form['name']),int(request.form['proportional']),int(request.form['integral']),int(request.form['differential']))
                 self.store.newConfig(config)
-            updated_config = {
-                'configId': config_configId,
-                'name': request.form['name'],
-                'p': request.form['p'],
-                'i': request.form['i'],
-                'd': request.form['d']
-            }
             
-            data['configs'] = [updated_config if p['configId'] == config_configId else p for p in data['configs']]
-            save_configs(data)
+            else:
+                updated_config = {
+                    'configId': config_configId,
+                    'name': request.form['name'],
+                    'proportional': request.form['proportional'],
+                    'integral': request.form['integral'],
+                    'differential': request.form['differential']
+                }
+                self.store.updateConfig(updated_config)
+
             return redirect(url_for('index')) 
 
         @app.route('/select/<int:configId>', methods=['POST'])
         def select(configId):
             # This route will be called via AJAX when a row is selected
+            config = self.store.getConfig(configId)
+            self.auto_pilot.setPidValues(config)
+            self.store.setDefault(configId)
             return jsonify({'message': f'Selected config with ID: {configId}'})
 
         return app

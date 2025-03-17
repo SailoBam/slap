@@ -22,10 +22,10 @@ class Sensor():
         self.sensorModel = model
 
 class Trip():
-    def __init__(self, trip_id: int, config_id: int, time_started: str, time_ended: str, date_started: str, date_ended: str, distance_travelled: float):
+    def __init__(self, tripId: int, configId: int, time_started: str, time_ended: str, date_started: str, date_ended: str, distance_travelled: float):
         # Contains and assigns the values for the Trip type
-        self.tripId = trip_id
-        self.configId = config_id
+        self.tripId = tripId
+        self.configId = configId
         self.timeStarted = time_started
         self.timeEnded = time_ended
         self.dateStarted = date_started
@@ -34,9 +34,9 @@ class Trip():
 
 class Reading():
      # Contains and assigns the values for the Reading type
-    def __init__(self, sensor_id: int, trip_id: int, data: float, timestamp: str):
-        self.sensorId = sensor_id
-        self.tripId = trip_id
+    def __init__(self, sensorId: int, tripId: int, data: float, timestamp: str):
+        self.sensorId = sensorId
+        self.tripId = tripId
         self.data = data
         self.timeStamp = timestamp
 
@@ -55,9 +55,10 @@ class SlapStore():
             CREATE TABLE IF NOT EXISTS CONFIGS (
                 configId INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,
-                p INTEGER NOT NULL,
-                i INTEGER NOT NULL,
-                d INTEGER NOT NULL
+                proportional INTEGER NOT NULL,
+                integral INTEGER NOT NULL,
+                differential INTEGER NOT NULL,
+                isDefault BOOLEAN
             )
         ''')
 
@@ -106,14 +107,14 @@ class SlapStore():
 
     def newConfig(self, config: Config): 
         # Inserts a config into the database
-        self.cursor.execute(f"INSERT INTO CONFIGS (name, p, i, d) VALUES ('{config.name}','{config.p}','{config.i}','{config.d}')")
+        self.cursor.execute(f"INSERT INTO CONFIGS (name, proportional, integral, differential) VALUES ('{config.name}','{config.proportional}','{config.integral}','{config.differential}')")
         self.connection.commit()
     
     def getGains(self,id: int):
         # Returns all PID gains stored in the Boat instance
         gains = {}
         # Retrieves all data and stores it as a dictionary
-        self.cursor.execute(f"SELECT p, i, d FROM CONFIGS WHERE configId = '{id}'")
+        self.cursor.execute(f"SELECT proportional, integral, differential FROM CONFIGS WHERE configId = '{id}'")
         columns = [desc[0] for desc in self.cursor.description]
         for row in self.cursor.fetchall():
             row_dict = dict(zip(columns, row))
@@ -124,10 +125,27 @@ class SlapStore():
         self.cursor.execute(f"SELECT * FROM CONFIGS")
         rows = self.cursor.fetchall()
         return [dict(row) for row in rows]
+    
+    def setDefault(self, configId: int):
+        # Clear any rows which are set as default
+        self.cursor.execute(f"SELECT ConfigId FROM CONFIGS WHERE isDefault = True")
+        rows = self.cursor.fetchall()
+        for row in rows:
+            self.cursor.execute(f"UPDATE CONFIGS SET isDefault = False WHERE configId = '{row.configId}'")
 
-    def getConfig(self,name: str):
+        # Set selected row as default
+        self.cursor.execute(f"UPDATE CONFIGS SET isDefault = True WHERE configId = '{configId}'")
+        self.connection.commit()
+
+    def updateConfig(self, config: Config):
+        print(f"UPDATE CONFIGS SET name = '{config['name']}', proportional = '{config['proportional']}', integral = '{config['integral']}', differential = '{config['differential']}' WHERE configId = '{config['configId']}'")
+        self.cursor.execute(f"UPDATE CONFIGS SET name = '{config['name']}', proportional = '{config['proportional']}', integral = '{config['integral']}', differential = '{config['differential']}' WHERE configId = '{config['configId']}'")
+        self.connection.commit()
+
+
+    def getConfig(self,configId: int):
         # Returns all information on a config using its name as the identifier
-        self.cursor.execute(f"SELECT * FROM CONFIGS WHERE configName == '{name}'")
+        self.cursor.execute(f"SELECT * FROM CONFIGS WHERE configId == '{configId}'")
         row = self.cursor.fetchone()
         return row
     
@@ -142,7 +160,7 @@ class SlapStore():
         row = self.cursor.fetchone()
         return row
 
-    def addTrip(self, trip: Trip):
+    def createTrip(self, trip: Trip):
         # Inserts a Trip into the database  
         self.cursor.execute(f"INSERT INTO Trip (tripId, configId, timeStarted, timeEnded, dateStarted, dateEnded, distanceTravelled) VALUES ('{trip.tripId}', '{trip.configId}', '{trip.timeStarted}', '{trip.timeEnded}', '{trip.dateStarted}', '{trip.dateEnded}', '{trip.distanceTravelled}')")
         self.connection.commit()
