@@ -22,14 +22,12 @@ class Sensor():
         self.sensorModel = model
 
 class Trip():
-    def __init__(self, tripId: int, configId: int, time_started: str, time_ended: str, date_started: str, date_ended: str, distance_travelled: float):
+    def __init__(self, tripId: int, configId: int, time_started: str, time_ended: str, distance_travelled: float):
         # Contains and assigns the values for the Trip type
         self.tripId = tripId
         self.configId = configId
         self.timeStarted = time_started
         self.timeEnded = time_ended
-        self.dateStarted = date_started
-        self.dateEnded = date_ended
         self.distanceTravelled = distance_travelled
 
 class Reading():
@@ -77,14 +75,11 @@ class SlapStore():
         # Trip table
         self.cursor.execute('''
             CREATE TABLE IF NOT EXISTS Trip (
-                tripId INTEGER,
+                tripId INTEGER PRIMARY KEY AUTOINCREMENT,
                 configId INTEGER NOT NULL,
-                timeStarted TEXT NOT NULL,
+                timeStarted DATE NOT NULL,
                 timeEnded TEXT NOT NULL,
-                dateStarted DATE NOT NULL,
-                dateEnded DATE NOT NULL,
                 distanceTravelled FLOAT NOT NULL,
-                PRIMARY KEY (tripId, configId),
                 FOREIGN KEY (configId) REFERENCES CONFIGS(configId) ON DELETE CASCADE
             )
         ''')
@@ -128,10 +123,7 @@ class SlapStore():
     
     def setDefault(self, configId: int):
         # Clear any rows which are set as default
-        self.cursor.execute(f"SELECT ConfigId FROM CONFIGS WHERE isDefault = True")
-        rows = self.cursor.fetchall()
-        for row in rows:
-            self.cursor.execute(f"UPDATE CONFIGS SET isDefault = False WHERE configId = '{row.configId}'")
+        self.cursor.execute(f"UPDATE CONFIGS SET isDefault = False WHERE isdefault = True")
 
         # Set selected row as default
         self.cursor.execute(f"UPDATE CONFIGS SET isDefault = True WHERE configId = '{configId}'")
@@ -143,9 +135,25 @@ class SlapStore():
         self.connection.commit()
 
 
-    def getConfig(self,configId: int):
+    def getCurrentConfig(self):
         # Returns all information on a config using its name as the identifier
-        self.cursor.execute(f"SELECT * FROM CONFIGS WHERE configId == '{configId}'")
+        try:
+            self.cursor.execute(f"SELECT * FROM CONFIGS WHERE isDefault == True")
+            row = self.cursor.fetchone()
+            #config = Config(row[0], row[1], row[2], row[3], row[4])
+            #print(config['name'])
+            return row
+        except Exception as e:
+            print("Error: No default config set")
+            print("Returning first config...")
+            self.cursor.execute(f"SELECT * FROM CONFIGS WHERE configId == 1")
+            row = self.cursor.fetchone()
+            config = Config(-1, 'null', 0, 0, 0)
+            #print(config['name'])
+            return config
+
+    def getConfig(self, configId: int):
+        self.cursor.execute(f"SELECT * FROM CONFIGS WHERE configId == '{configId}'") 
         row = self.cursor.fetchone()
         return row
     
@@ -162,7 +170,7 @@ class SlapStore():
 
     def createTrip(self, trip: Trip):
         # Inserts a Trip into the database  
-        self.cursor.execute(f"INSERT INTO Trip (tripId, configId, timeStarted, timeEnded, dateStarted, dateEnded, distanceTravelled) VALUES ('{trip.tripId}', '{trip.configId}', '{trip.timeStarted}', '{trip.timeEnded}', '{trip.dateStarted}', '{trip.dateEnded}', '{trip.distanceTravelled}')")
+        self.cursor.execute(f"INSERT INTO Trip (configId, timeStarted, timeEnded, distanceTravelled) VALUES ('{trip.configId}', '{trip.timeStarted}', '{trip.timeEnded}', '{trip.distanceTravelled}')")
         self.connection.commit()
 
     def getTrip(self, trip_id: int, config_id: int):

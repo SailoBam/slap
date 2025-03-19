@@ -27,6 +27,7 @@ class AutoPilot():
         self.decoder = Decoder()
         self.actual_heading = 0
         self.tiller_angle = 0
+        self.config = self.data_store.getCurrentConfig()
 
 
     def setHeading(self,input):
@@ -76,6 +77,9 @@ class AutoPilot():
         return error
     
     def setPidValues(self, config: Config):
+        self.config = config
         self.pid_controller.setGains(config)
     
+    def getCurrentConfig(self):
+        return self.config
     

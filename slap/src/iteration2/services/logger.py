@@ -12,8 +12,6 @@ class Logger:
         # slapstore.addTrip()
         if not self.running:
             self.running = True
-            trip = Trip(0,)
-            self.store.createTrip()
             self.thread = Thread(target=self.loggerLoop, daemon=True)
             self.thread.start()
 

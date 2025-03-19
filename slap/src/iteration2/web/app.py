@@ -1,7 +1,6 @@
 import os
 from flask import Flask, request, render_template, jsonify, g, redirect, url_for
-from services.slapStore import SlapStore
-from services.slapStore import Config
+from services.slapStore import SlapStore, Config, Trip
 from control.autoPilot import AutoPilot
 from utils.headings import compassify
 from services.logger import Logger
@@ -9,6 +8,7 @@ import threading
 import queue
 import time
 import json
+from datetime import datetime
 
 class WebServer:
 
@@ -113,6 +113,12 @@ class WebServer:
                 if self.logger.isRunning():
                     self.logger.stop()
                 else:
+                    now = datetime.now()
+                    date_string = now.strftime('%y %m %d %H %M')
+                    print(date_string) 
+                    config = self.auto_pilot.getCurrentConfig() 
+                    trip = Trip(0,config['configId'], now.strftime('%y %m %d %H %M %S'), None, None )
+                    self.store.createTrip(trip)
                     self.logger.start()
 
                 status = {
