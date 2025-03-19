@@ -173,11 +173,12 @@ class SlapStore():
         self.cursor.execute(f"INSERT INTO Trip (configId, timeStarted, timeEnded, distanceTravelled) VALUES ('{trip.configId}', '{trip.timeStarted}', '{trip.timeEnded}', '{trip.distanceTravelled}')")
         self.connection.commit()
 
-    def getTrip(self, trip_id: int, config_id: int):
+    def getTrip(self, dateTime):
         # returns all information on a trip using the tripId and BoatId as the identifier
-        self.cursor.execute(f"SELECT * FROM Trip WHERE tripId == {trip_id} AND configId == {config_id}")
+        self.cursor.execute(f"SELECT * FROM Trip WHERE timeStarted == {dateTime}")
         row = self.cursor.fetchone()
         return row
+    
 
     def addReading(self, reading: Reading):
         # Inserts a Reading into the database    
