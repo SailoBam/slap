@@ -4,25 +4,28 @@
     Simple motion dynamics example - working
     Simple boat dynamics example - 
     boat dymanic maths - (almost done)
+    Code boat simulator module (this must genertate heading as a function of time in response to rudder angle)
 TODO: 
 
-    Code boat simulator module (this must genertate heading as a function of time in response to rudder angle)
+
     
 ## 2. PID Controller
     PID Module - working
     Tester which runs it with the rocket simulation - working
+    Run PID module against boat dynamics
 TODO:
 
-    Run PID module against boat dynamics
+   
 ## 3. Web App
     Basic web server with PUSH, PUT, POST functions -Working
     Basic HTML page with javascript button - Working
     Can serve a file - Working
     Design iteration 0 of web page - Includes current direction, set direction, up and down button - Working
     Basic web app with images and rotation svg according to angle - working
+    Design iteration 1 of web app - This will include all bells and whistles including start/stop, record buttons, time
+
 TODO:
 
-    Design iteration 1 of web app - This will include all bells and whistles including start/stop, record buttons, time
 
 ## 4. NMEA Reader
     NMEA Writer (Angle) - working
@@ -32,10 +35,11 @@ TODO:
 ## 5. Database
     basic database function library - working
     basic database design drawing - complete
+    Create database initialisation script
 TODO:
 
     Finalise database design 
-    Create database initialisation script
+    
     Finish database service layer (slapStore)
 
 ## 6. Cloud Interface (For Database)
@@ -48,10 +52,11 @@ TODO:
 
 ## 7. Application Framework
     Created basic threading tests inlcuding using a simple web server one thread (without PID) - Working
-TODO:
-
     Create worker threads for PID and seperated web server
     Intergrate the PID boat simulator into a multi-threaded application
+TODO:
+
+   
     Intergrate PID output to drive servo motor
 
 ## X. Motor Driver
@@ -66,9 +71,11 @@ TODO:
 # Write Up topics
 
 ## 8. User Requirements
+Generate set of interview questions to discover user requirements
+
 (Write Up) TODO:
 
-    Generate set of interview questions to discover user requirements
+  
     Develop a set of user stories
     Develop use cases from user stories
 

@@ -112,19 +112,10 @@ class WebServer:
                 self.current_trip = "null"
 
                 if self.logger.isRunning():
-                    now = datetime.now()
-                    date_string = now.strftime('%y %m %d %H %M')
-                    self.store.getTrip(self.current_trip)
                     self.logger.stop()
                 else:
-                    now = datetime.now()
-                    date_string = now.strftime('%y %m %d %H %M')
-                    print(date_string) 
                     config = self.auto_pilot.getCurrentConfig() 
-                    trip = Trip(0,config['configId'], now.strftime('%y %m %d %H %M %S'), None, None )   
-                    self.store.createTrip(trip)
-                    self.logger.start()
-                    self.current_trip = date_string
+                    self.logger.start(config)
                 status = {
                 'status': self.logger.isRunning(),
                 'tripName': "LogName"

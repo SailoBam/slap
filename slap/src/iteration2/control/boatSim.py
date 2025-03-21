@@ -1,4 +1,6 @@
 import msvcrt
+from geopy.distance import geodesic
+from geopy.point import Point
 import sys
 import os
 from threading import Thread
@@ -15,8 +17,11 @@ class BoatSim:
 
     def __init__(self):
         # Imports the heading variable
-        self.heading = 0
+        self.heading = 0.0
         self.running = False
+        self.speed_over_ground = 100 #knots
+        self.pos = Point(50.604531, -3.408637)
+        # start simulation, at ~ exmouth safe water mark
 
 
     def setGps(self, gps):
@@ -37,7 +42,6 @@ class BoatSim:
         self.previousTime = 0
         while self.running == True:
             # Preforms one iteration of the boats movements and ensures its a usable value
-
             self.currentTimeMilli = int(round(time.time() * 1000))
 
             if self.previousTime != 0:
@@ -45,6 +49,8 @@ class BoatSim:
             else:
                 dt = 0
 
+            # Calculate new long/lat based on distance travelled and current heading
+            newPos = self.getNewPosition(self.pos, self.speed_over_ground, self.heading, dt)
             disturbance = self.disturbance()
             #print(disturbance)
 
@@ -54,9 +60,11 @@ class BoatSim:
             # ψ(t) = ψ(0) + δ * [t/T + (exp(-t/T) - 1)]
          
             newHead = (self.heading + yawRate * (dt / TIMECONSTANT + (math.exp(-dt / TIMECONSTANT) - 1)))
+
               
-            self.gps.setHeading(newHead, self.currentTimeMilli)
+            self.gps.update(newHead, str(newPos.longitude), str(newPos.latitude), self.currentTimeMilli)
             self.heading = newHead
+            self.pos = newPos
 
 
     def disturbance(self):
@@ -93,6 +101,23 @@ class BoatSim:
     def stop(self):
         # Stops the system
         self.running = False 
+
+    def getNewPosition(self, start_position: Point, speed_kt, heading_deg, time_secs):
+        """
+        Calculate the new latitude and longitude after traveling at a given speed (in knots) and heading.
+
+        :param start_position: Where we start
+        :param speed_kt: Speed in knots (nautical miles per hour)
+        :param heading_deg: Compass heading in degrees (0 = North, 90 = East)
+        :param time_hours: Time in hours
+        :return: New (longitude, latitude) as a Point
+        """
+
+        distance_km = (speed_kt * 1.852) * (time_secs / (60 * 60))  # Convert knots to km/h and compute distance
+        print(distance_km)
+        return geodesic(kilometers=distance_km).destination(start_position, heading_deg)
+    
+
 
 
     

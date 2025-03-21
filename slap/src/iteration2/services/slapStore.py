@@ -1,5 +1,5 @@
 import sqlite3
-
+import ast
 
 # --- All Classes possible to put into the database ---
 class Config():
@@ -32,7 +32,7 @@ class Trip():
 
 class Reading():
      # Contains and assigns the values for the Reading type
-    def __init__(self, sensorId: int, tripId: int, data: float, timestamp: str):
+    def __init__(self, tripId: int, sensorId: int, data: str, timestamp: str):
         self.sensorId = sensorId
         self.tripId = tripId
         self.data = data
@@ -84,12 +84,12 @@ class SlapStore():
             )
         ''')
 
-        # Reading table
+        # Readings table
         self.cursor.execute('''
-            CREATE TABLE IF NOT EXISTS Reading (
+            CREATE TABLE IF NOT EXISTS Readings (
                 sensorId INTEGER NOT NULL,
                 tripId INTEGER NOT NULL,
-                data FLOAT NOT NULL,
+                data TEXT NOT NULL,
                 timeStamp TIME NOT NULL,
                 FOREIGN KEY (sensorId) REFERENCES Sensor(sensorId) ON DELETE CASCADE,
                 FOREIGN KEY (tripId) REFERENCES Trip(tripId) ON DELETE CASCADE
@@ -130,7 +130,7 @@ class SlapStore():
         self.connection.commit()
 
     def updateConfig(self, config: Config):
-        print(f"UPDATE CONFIGS SET name = '{config['name']}', proportional = '{config['proportional']}', integral = '{config['integral']}', differential = '{config['differential']}' WHERE configId = '{config['configId']}'")
+        #print(f"UPDATE CONFIGS SET name = '{config['name']}', proportional = '{config['proportional']}', integral = '{config['integral']}', differential = '{config['differential']}' WHERE configId = '{config['configId']}'")
         self.cursor.execute(f"UPDATE CONFIGS SET name = '{config['name']}', proportional = '{config['proportional']}', integral = '{config['integral']}', differential = '{config['differential']}' WHERE configId = '{config['configId']}'")
         self.connection.commit()
 
@@ -148,7 +148,7 @@ class SlapStore():
             print("Returning first config...")
             self.cursor.execute(f"SELECT * FROM CONFIGS WHERE configId == 1")
             row = self.cursor.fetchone()
-            config = Config(-1, 'null', 0, 0, 0)
+            config = Config(-1, 'null', 0.5, 0, 0)
             #print(config['name'])
             return config
 
@@ -171,7 +171,9 @@ class SlapStore():
     def createTrip(self, trip: Trip):
         # Inserts a Trip into the database  
         self.cursor.execute(f"INSERT INTO Trip (configId, timeStarted, timeEnded, distanceTravelled) VALUES ('{trip.configId}', '{trip.timeStarted}', '{trip.timeEnded}', '{trip.distanceTravelled}')")
+        trip.tripId = self.cursor.lastrowid
         self.connection.commit()
+        return trip
 
     def getTrip(self, dateTime):
         # returns all information on a trip using the tripId and BoatId as the identifier
@@ -179,21 +181,51 @@ class SlapStore():
         row = self.cursor.fetchone()
         return row
     
+    def endTrip(self, trip: Trip):
+        try:
+            #print(f"UPDATE Trip SET timeEnded = ? WHERE tripId = ?", (trip.timeEnded, trip.tripId))
+            self.cursor.execute(f"UPDATE Trip SET timeEnded = ? WHERE tripId = ?", (trip.timeEnded, trip.tripId))
+            self.connection.commit()
+        except Exception as e:
+            print(f"Error updating trip: {e}")
+            self.connection.rollback()
 
-    def addReading(self, reading: Reading):
+    def writeLog(self, reading: Reading):
         # Inserts a Reading into the database    
-        self.cursor.execute(f"INSERT INTO Reading (sensorId, tripId, data, timeStamp) VALUES ('{reading.sensorId}', '{reading.tripId}', '{reading.data}', '{reading.timeStamp}')")
+        self.cursor.execute(f"INSERT INTO Readings (tripId, sensorId, data, timeStamp) VALUES ('{reading.tripId}', '{reading.sensorId}', '{reading.data}', '{reading.timeStamp}')")
         self.connection.commit()
 
+    def getLog(self, trip: Trip):
+        """
+        Get all readings from the trip
+        :param trip
+        :return: List of positional lists stored as floats
+        """
+
+        data = []
+        # Get all readings from database
+        self.cursor.execute(f"SELECT data FROM Readings WHERE tripId == '{trip.tripId}'")
+        rows = self.cursor.fetchall()
+        for row in rows:
+            # Splits lon/lat string into list of strings
+            pos_list = row[0].split(",")
+            # Convert string list to float list
+            num_list = list(map(float, pos_list))
+            # Add positional list into waypoints list
+            data.append(num_list)
+            print(data)
+        return data
+
+ 
     def getReading(self, sensor_id: int, trip_id: int):
         # Returns all Reading information using the sensorId and TripId as identifiers
-        self.cursor.execute(f"SELECT * FROM Reading WHERE sensorId == {sensor_id} AND tripId == {trip_id}")
+        self.cursor.execute(f"SELECT * FROM Readings WHERE sensorId == {sensor_id} AND tripId == {trip_id}")
         row = self.cursor.fetchone()
         return row
     
     def getAllReadings(self):
         # Prints all readings from any sensor 
-        self.cursor.execute(f"SELECT * FROM Reading")
+        self.cursor.execute(f"SELECT * FROM Readings")
         for row in self.cursor.fetchall():
             print(row)
 

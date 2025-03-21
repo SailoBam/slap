@@ -1,5 +1,5 @@
 #                               Project Entry Point                              # 
-
+from services.mapManager import MapManager
 from services.slapStore import SlapStore
 from control.autoPilot import AutoPilot
 from control.boatSim import BoatSim
@@ -19,7 +19,8 @@ class Main():
         self.auto_pilot = AutoPilot()
         self.gps = Gps()
         self.boat_sim = BoatSim()
-        self.logger = Logger()
+        self.map_manager = MapManager()
+        self.logger = Logger(self.gps, self.map_manager)
         self.store = SlapStore()
 
 
@@ -49,7 +50,6 @@ class Main():
 
 
 if __name__ == '__main__':
-
     main = Main()
     main.main()
     
