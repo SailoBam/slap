@@ -166,9 +166,9 @@ class WebServer:
                 return redirect(url_for('trips'))
             
             # Get config details
-            config = self.store.getConfig(trip['configId'])
+            #config = self.store.getConfig(trip['configId'])
             
-            return render_template('view_trip.html', trip=trip, config=config)
+            return render_template('view_trip.html', trip=trip)
 
         @app.route('/edit/<int:configId>', methods=['GET'])
         def edit(configId):
