@@ -27,7 +27,7 @@ class AutoPilot():
         self.decoder = Decoder()
         self.actual_heading = 0
         self.tiller_angle = 0
-        self.config = self.data_store.getCurrentConfig()
+        self.config = None
 
 
     def setHeading(self,input):

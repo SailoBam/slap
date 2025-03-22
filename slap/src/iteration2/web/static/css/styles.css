@@ -28,14 +28,14 @@ tr:hover {
 .button {
     padding: 5px 10px;
     text-decoration: none;
-    color: white;
+    color: rgb(255, 255, 255);
     border-radius: 3px;
     cursor: pointer;
     border: none;
 }
 
 .edit {
-    background-color: #4CAF50;
+    background-color: #a1a0a0;
 }
 
 .select {
@@ -43,7 +43,7 @@ tr:hover {
 }
 
 .selected {
-    background-color: #e6f3ff;
+    background-color: #0084ff;
 }
 
 /* Form styles */
@@ -84,6 +84,21 @@ input {
 }
 
 .cancel {
+    background-color: #f44336;
+    padding: 10px 20px;
+} 
+
+.view {
+    background-color: #949494;
+    padding: 10px 20px;
+} 
+
+.upload {
+    background-color: #0084ff;
+    padding: 10px 20px;
+} 
+
+.delete {
     background-color: #f44336;
     padding: 10px 20px;
 } 

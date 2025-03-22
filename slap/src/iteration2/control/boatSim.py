@@ -114,7 +114,7 @@ class BoatSim:
         """
 
         distance_km = (speed_kt * 1.852) * (time_secs / (60 * 60))  # Convert knots to km/h and compute distance
-        print(distance_km)
+        #print(distance_km)
         return geodesic(kilometers=distance_km).destination(start_position, heading_deg)
     
 

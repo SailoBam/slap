@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <div>
+        <a href="/" class="button"><button>Home</button></a>
+    </div> <hr>
+<head>
+    <title>SLAP Trips</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <h1>SLAP Trips</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Config</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Distance</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for trip in trips %}
+            <tr tripId="row-{{ trip.tripId }}">
+                <td>{{ trip.configId }}</td>
+                <td>{{ trip.timeStarted }}</td>
+                <td>{{ trip.timeEnded }}</td>
+                <td>{{ trip.distanceTravelled }}</td>
+                <td class="actions">
+                    <a href="{{ url_for('view_trip', tripId=trip.tripId) }}" class="button view">View</a>
+                    <button onclick="uploadTripData({{trip.tripId}})" class="button upload">Upload Data</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table> <br>
+   
+
+    <script>
+        function uploadTripData(tripId) {
+
+        }
+
+        function viewTripDetails(tripId) {
+            // Navigate to trip details page
+            window.location.href = '/trip_details/' + tripId;
+        }
+    </script>
+</body>
+</html> 

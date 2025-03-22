@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Trip</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="form-container">
+        <h2>Trip Details</h2>
+        <div class="trip-details">
+            <div class="detail-group">
+                <label>Start Time:</label>
+                <span>{{ trip.timeStarted }}</span>
+            </div> <br>
+            
+            <div class="detail-group">
+                <label>End Time:</label>
+                <span>{{ trip.timeEnded }}</span>
+            </div> <br>
+            
+            <div class="detail-group">
+                <label>Distance Travelled:</label>
+                <span>{{ trip.distanceTravelled }} meters</span>
+            </div> <br>
+
+            <div class="detail-group">
+                <label>Configuration Used:</label>
+                <span>{{ config.name }}</span>
+            </div> <br>
+        </div>
+        
+        <div class="buttons">
+            <a href="{{ url_for('trips') }}" class="button cancel" style="text-decoration: none;">Back to Trips</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script>
+        // Get trip data from the server
+        fetch('/api/trip/{{ trip.tripId }}/data')
+            .then(response => response.json())
+            .then(data => {
+                // Create the chart using Plotly
+                const trace = {
+                    x: data.timestamps,
+                    y: data.distances,
+                    type: 'scatter',
+                    mode: 'lines+markers',
+                    name: 'Distance Over Time'
+                };
+
+                const layout = {
+                    title: 'Distance Travelled Over Time',
+                    xaxis: {
+                        title: 'Time'
+                    },
+                    yaxis: {
+                        title: 'Distance (meters)'
+                    }
+                };
+
+                Plotly.newPlot('tripChart', [trace], layout);
+            })
+            .catch(error => console.error('Error:', error));
+    </script>
+</body>
+</html> 

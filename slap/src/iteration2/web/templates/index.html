@@ -7,9 +7,14 @@
     <title>Change Value</title>
 </head>
 
+<div>
+      <a href="configs" class="buttons"><button>Configs</button></a>
+      <a href="trips" class="buttons"><button>Trips</button></a>
+</div> <hr>
+
 <body>
     <div>
-        Angle = <div id="angle">0</div>
+        Angle: <div id="angle">0</div>
     </div>
     <button onclick="changeValue(10)">+10</button>
     <!-- These buttons run the changeValue function in the javascript-->
@@ -38,9 +43,9 @@
               transform="rotate(0, 50, 50)" />
       </svg>
       <div>
-            <button id = loggingButton onclick="toggleLogging()">START</button>
+            <button id = loggingButton onclick="toggleLogging()">START</button> <br><br>
     <!-- This button start and stop logging in the javascript-->
-      <a href="configs" class="buttons"><button>Configs</button></a>
+   
       </div>
 </body>
 

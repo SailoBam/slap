@@ -89,25 +89,40 @@ async function updateCompass() {
     
 }
 
+async function systemStatus(){
+    response = await fetch('/api/systemStatus');
+    console.log(response)
+    sysStatus = await response.json();
+    console.log(sysStatus.status)
+    console.log(sysStatus)
+    button = document.getElementById('loggingButton')
+    setButtonStatus(sysStatus.status)
+}
+
+function setButtonStatus(buttonStatus){
+    button = document.getElementById('loggingButton')
+    if (buttonStatus) {
+        button.textContent = "STOP"
+        button.style.backgroundColor = "red"
+    }
+    else{
+        button.textContent = "START"
+        button.style.backgroundColor = "green"
+    }
+}
+
 async function toggleLogging(){
     response = await fetch('/api/toggleLogging');
     
     logging_status = await response.json();
     console.log(logging_status.status)
     button = document.getElementById('loggingButton')
-    if (logging_status.status) {
-        console.log("set to STOP")
-        button.textContent = "STOP"
-        button.style.backgroundColor = "red"
-    }
-    else {
-        console.log("set to START")
-        button.textContent = "START"
-        button.style.backgroundColor = "green"
-    }
+    setButtonStatus(logging_status)
 }
-// Initial load
-updateCompass();
 
+async function updateAll(){
+    updateCompass();
+    systemStatus();
+}
 // Update readings
-setInterval(updateCompass, 200);
+setInterval(updateAll, 200);

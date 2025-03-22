@@ -7,5 +7,64 @@
             "database": "${workspaceFolder:slap}/slap.db"
         }
     ],
-    "sqltools.useNodeRuntime": true
+    "sqltools.useNodeRuntime": true,
+    "python.analysis.typeCheckingMode": "basic",
+    "python.analysis.autoImportCompletions": true,
+    "python.analysis.inlayHints.functionReturnTypes": true,
+    "python.analysis.inlayHints.variableTypes": true,
+    "editor.inlineSuggest.enabled": true,
+    "editor.suggestSelection": "first",
+    "editor.acceptSuggestionOnEnter": "on",
+    "editor.snippetSuggestions": "top",
+    "editor.parameterHints.enabled": true,
+    "editor.quickSuggestions": {
+        "other": true,
+        "comments": true,
+        "strings": true
+    },
+    "jupyter.alwaysTrustNotebooks": true,
+    "jupyter.askForKernelRestart": true,
+    "jupyter.autoStartDefaultServer": true,
+    "jupyter.codeCompletion": true,
+    "jupyter.debugger.javascript.javascriptCompletion": true,
+    "jupyter.debugger.javascript.javascriptDebugger": true,
+    "jupyter.debugger.javascript.javascriptDebuggerOptions": {
+        "sourceMaps": true,
+        "sourceMapPathOverrides": {
+            "webpack:///./~/*": "${webRoot}/node_modules/*",
+            "webpack:////*": "/*",
+            "webpack:///?:*/*": "${webRoot}/*",
+            "webpack:///./*": "${webRoot}/*"
+        }
+    },
+    "jupyter.notebookFileRoot": "${workspaceFolder}",
+    "jupyter.enableNativeInteractiveWindow": true,
+    "jupyter.allowUnauthorizedRemoteConnection": true,
+    "jupyter.allowImportFromNotebook": true,
+    "jupyter.completions": {
+        "enableAutoComplete": true,
+        "enableAutoCompleteForVariables": true,
+        "enableAutoCompleteForImports": true,
+        "enableAutoCompleteForKeywords": true,
+        "enableAutoCompleteForBuiltins": true
+    },
+    "markdown.preview.breaks": true,
+    "markdown.preview.doubleClickToSwitchToEditor": true,
+    "markdown.preview.fontFamily": "-apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, Ubuntu, 'Droid Sans', sans-serif",
+    "markdown.preview.fontSize": 14,
+    "markdown.preview.lineHeight": 1.6,
+    "markdown.preview.scrollSync": true,
+    "markdown.preview.wordWrap": "on",
+    "markdown.syntax.decorateEmptyHeaders": true,
+    "markdown.syntax.plainTheme": true,
+    "markdown.toc.levels": "2..6",
+    "markdown.validate.enabled": true,
+    "markdown.validate.fileLinks.enabled": true,
+    "markdown.validate.fragmentLinks.enabled": true,
+    "markdown.validate.fragmentLinks.warnOnEmptyFragment": true,
+    "markdown.validate.ignoreLinks": [],
+    "markdown.validate.ignoreLinks.pattern": "^(file|http|https|mailto|data):",
+    "markdown.validate.ignoreLinks.resource": "**/*.{md,markdown}",
+    "markdown.validate.ignoreLinks.resource.exclude": "**/node_modules/**",
+    "jupyter.interactiveWindow.creationMode": "perFile"
 }

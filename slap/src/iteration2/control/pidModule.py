@@ -61,7 +61,7 @@ class PidController:
 
     def setGains(self, config: Config):
         print("setting gains")
-        self.kp = config['proportional']
-        self.ki = config['integral']
-        self.kd = config['differential']
+        self.kp = config.proportional
+        self.ki = config.integral
+        self.kd = config.differential
         self.reset()

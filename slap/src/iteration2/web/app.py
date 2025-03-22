@@ -17,7 +17,7 @@ class WebServer:
         self.auto_pilot = auto_pilot
         self.logger = logger
         self.logging = False
-
+        self.current_trip = None
         
 
     def create_server(self, store: SlapStore):
@@ -34,6 +34,11 @@ class WebServer:
             #with open('C:/Users/franc/vscode/projects/slap/slap/src/iteration2/data.json', 'r') as f:
            #    print(json.load(f))
             return {'configs': f}
+
+        def load_trips():
+            trips = store.listTrips()
+            print({'trips': trips})
+            return {'trips': trips}
 
         def save_configs(data):
             with open('C:/Users/franc/vscode/projects/slap/slap/src/iteration2/data.json', 'w') as f:
@@ -106,16 +111,18 @@ class WebServer:
                 print(f"Error processing request: {str(e)}")
                 return jsonify({"error": str(e)}), 400
         
-        @app.route('/api/toggleLogging', methods=['GET'])
+        @app.route('/api/toggleLogging')
         def toggleLogging():
             try:
-                self.current_trip = "null"
+                self.current_trip = None
 
                 if self.logger.isRunning():
                     self.logger.stop()
                 else:
-                    config = self.auto_pilot.getCurrentConfig() 
+                    config = self.store.getCurrentConfig() 
+                    self.auto_pilot.setPidValues(config)
                     self.logger.start(config)
+                    self.current_trip = config
                 status = {
                 'status': self.logger.isRunning(),
                 'tripName': "LogName"
@@ -127,12 +134,41 @@ class WebServer:
                 print(f"Error processing request to toggle logging: {str(e)}")
                 return jsonify({"error": str(e)}), 400
             
-            # Boat database roots 
+        @app.route('/api/systemStatus')
+        def systemStatus():
+            if self.current_trip is None:
+                name = "No Trip"
+            else:
+                name = self.current_trip.name
+            running = self.logger.isRunning()
+            
+            status = {
+                'status': running,
+                'tripName': name
+            }
+            return jsonify(status), 200
 
         @app.route('/configs')
         def index():
             data = load_configs()
             return render_template('configs.html', configs = data["configs"])
+
+        @app.route('/trips')
+        def trips():
+            data = load_trips()
+            return render_template('trips.html', trips=data["trips"])
+
+        @app.route('/view_trip/<int:tripId>', methods=['GET'])
+        def view_trip(tripId):
+            # Get trip details
+            trip = self.store.getTrip(tripId)
+            if not trip:
+                return redirect(url_for('trips'))
+            
+            # Get config details
+            config = self.store.getConfig(trip['configId'])
+            
+            return render_template('view_trip.html', trip=trip, config=config)
 
         @app.route('/edit/<int:configId>', methods=['GET'])
         def edit(configId):
@@ -152,7 +188,7 @@ class WebServer:
             config_configId = int(request.form['configId'])
             print(config_configId)
             if config_configId == 0:
-                config = Config(0, str(request.form['name']),int(request.form['proportional']),int(request.form['integral']),int(request.form['differential']))
+                config = Config(0, str(request.form['name']),float(request.form['proportional']),float(request.form['integral']),float(request.form['differential']))
                 self.store.newConfig(config)
             
             else:
@@ -163,17 +199,23 @@ class WebServer:
                     'integral': request.form['integral'],
                     'differential': request.form['differential']
                 }
+                updated_config = Config(updated_config['configId'], updated_config['name'], updated_config['proportional'], updated_config['integral'], updated_config['differential'])
                 self.store.updateConfig(updated_config)
 
             return redirect(url_for('index')) 
 
         @app.route('/select/<int:configId>', methods=['POST'])
         def select(configId):
-            # This route will be called via AJAX when a row is selected
             config = self.store.getConfig(configId)
             self.auto_pilot.setPidValues(config)
             self.store.setDefault(configId)
             return jsonify({'message': f'Selected config with ID: {configId}'})
 
+
+    
+        @app.route('/delete/<int:configId>', methods=['POST'])
+        def deleteConfig(configId):
+            self.store.deleteConfig(configId)
+            return redirect(url_for('index'))
+    
         return app
-        

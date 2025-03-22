@@ -1,5 +1,8 @@
 <!DOCTYPE html>
 <html>
+    <div>
+        <a href="/" class="button"><button>Home</button></a>
+    </div> <hr>
 <head>
     <title>SLAP Config</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
@@ -25,6 +28,7 @@
                 <td class="actions">
                     <a href="{{ url_for('edit', configId=config.configId) }}" class="button edit">Edit</a>
                     <button onclick="selectconfig({{config.configId}})" class="button select">Select</button>
+                    <button onclick="deleteConfig({{config.configId}})" class="button delete">Delete</button>
                 </td>
             </tr>
             {% endfor %}
@@ -32,7 +36,6 @@
     </table> <br>
     <div>
         <a href="{{ url_for('edit', configId=0) }}" class="button edit">New Config</a><br><br>
-        <a href="/" class="button"><button>Home</button></a>
     </div>
     
 
@@ -54,6 +57,23 @@
             .then(response => response.json())
             .then(data => {
                 console.log(data.message);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+    <script>
+        function deleteConfig(configId) {
+            fetch('/delete/' + configId, {
+                method: 'POST',
+            })
+            .then(response => {
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    console.error('Error deleting config');
+                }
             })
             .catch(error => {
                 console.error('Error:', error);

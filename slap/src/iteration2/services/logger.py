@@ -1,6 +1,6 @@
 from threading import Thread
 import time
-from services.slapStore import SlapStore, Trip, Reading
+from services.slapStore import SlapStore, Trip, Reading, Config
 from datetime import datetime
 from transducers.gps import Gps
 from services.mapManager import MapManager
@@ -12,7 +12,7 @@ class Logger:
         self.gps = gps
         self.map_manager = map_manager
 
-    def start(self, config):
+    def start(self, config: Config):
         # Starts the control system on a new thread
         # 1. Create a new trip
         # slapstore.addTrip()
@@ -20,7 +20,7 @@ class Logger:
             now = datetime.now()
             date_string = now.strftime('%y %m %d %H %M %S')
             print(date_string) 
-            trip = Trip(None, config['configId'], now.strftime('%y %m %d %H %M %S'), None, None )   
+            trip = Trip(0, config.configId, now.strftime('%y %m %d %H %M %S'), None, None )   
             self.trip = self.store.createTrip(trip)
             self.running = True
             self.thread = Thread(target=self.loggerLoop, daemon=True)

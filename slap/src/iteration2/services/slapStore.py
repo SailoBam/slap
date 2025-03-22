@@ -4,13 +4,24 @@ import ast
 # --- All Classes possible to put into the database ---
 class Config():
 
-    def __init__(self, id: int,  name: str, proportional: int, integral: int, differential: int):
+    def __init__(self, id: int,  name: str, proportional: float, integral: float, differential: float):
         # Contains and assigns the values for the Boat type
         self.name = name
         self.configId = id
         self.proportional = proportional
         self.integral = integral
         self.differential = differential
+
+    @classmethod
+    def from_dict(cls, row):
+        # Alternative constructor that takes a dictionary of attributes
+        return Config(
+            id=row['configId'],
+            name=row['name'], 
+            proportional=float(row['proportional']),
+            integral=float(row['integral']),
+            differential=float(row['differential'])
+        )
 
 class Sensor():
 
@@ -20,7 +31,15 @@ class Sensor():
         self.configId = config
         self.sensorName = name
         self.sensorModel = model
-
+        
+    @classmethod
+    def from_dict(cls, row):
+        return Sensor(
+            id=row['sensorId'],
+            config=row['configId'],
+            name=row['sensorName'],
+            model=row['sensorModel']
+        )
 class Trip():
     def __init__(self, tripId: int, configId: int, time_started: str, time_ended: str, distance_travelled: float):
         # Contains and assigns the values for the Trip type
@@ -30,6 +49,17 @@ class Trip():
         self.timeEnded = time_ended
         self.distanceTravelled = distance_travelled
 
+    @classmethod
+    def from_dict(cls, row):
+        return Trip(
+            tripId=row['tripId'],
+            configId=row['configId'],
+            time_started=row['timeStarted'],
+            time_ended=row['timeEnded'],
+            distance_travelled=row['distanceTravelled']
+        )
+
+
 class Reading():
      # Contains and assigns the values for the Reading type
     def __init__(self, tripId: int, sensorId: int, data: str, timestamp: str):
@@ -37,6 +67,15 @@ class Reading():
         self.tripId = tripId
         self.data = data
         self.timeStamp = timestamp
+
+    @classmethod
+    def from_dict(cls, row):
+        return Reading(
+            tripId=row['tripId'],
+            sensorId=row['sensorId'],
+            data=row['data'],
+            timestamp=row['timeStamp']
+        )
 
         
 class SlapStore():
@@ -53,9 +92,9 @@ class SlapStore():
             CREATE TABLE IF NOT EXISTS CONFIGS (
                 configId INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,
-                proportional INTEGER NOT NULL,
-                integral INTEGER NOT NULL,
-                differential INTEGER NOT NULL,
+                proportional REAL NOT NULL,
+                integral REAL NOT NULL,
+                differential REAL NOT NULL,
                 isDefault BOOLEAN
             )
         ''')
@@ -101,9 +140,11 @@ class SlapStore():
 #        ---All service functions for the database---
 
     def newConfig(self, config: Config): 
-        # Inserts a config into the database
+        # Inserts a config into the database and returns the auto-incremented ID
         self.cursor.execute(f"INSERT INTO CONFIGS (name, proportional, integral, differential) VALUES ('{config.name}','{config.proportional}','{config.integral}','{config.differential}')")
         self.connection.commit()
+        config.configId = self.cursor.lastrowid
+        return config
     
     def getGains(self,id: int):
         # Returns all PID gains stored in the Boat instance
@@ -131,31 +172,36 @@ class SlapStore():
 
     def updateConfig(self, config: Config):
         #print(f"UPDATE CONFIGS SET name = '{config['name']}', proportional = '{config['proportional']}', integral = '{config['integral']}', differential = '{config['differential']}' WHERE configId = '{config['configId']}'")
-        self.cursor.execute(f"UPDATE CONFIGS SET name = '{config['name']}', proportional = '{config['proportional']}', integral = '{config['integral']}', differential = '{config['differential']}' WHERE configId = '{config['configId']}'")
+        self.cursor.execute(f"UPDATE CONFIGS SET name = '{config.name}', proportional = '{config.proportional}', integral = '{config.integral}', differential = '{config.differential}' WHERE configId = '{config.configId}'")
         self.connection.commit()
 
+    def deleteConfig(self, configId: int):
+        self.cursor.execute(f"DELETE FROM CONFIGS WHERE configId = '{configId}'")
+        self.connection.commit()
 
     def getCurrentConfig(self):
         # Returns all information on a config using its name as the identifier
         try:
             self.cursor.execute(f"SELECT * FROM CONFIGS WHERE isDefault == True")
             row = self.cursor.fetchone()
-            #config = Config(row[0], row[1], row[2], row[3], row[4])
-            #print(config['name'])
-            return row
-        except Exception as e:
-            print("Error: No default config set")
-            print("Returning first config...")
-            self.cursor.execute(f"SELECT * FROM CONFIGS WHERE configId == 1")
-            row = self.cursor.fetchone()
-            config = Config(-1, 'null', 0.5, 0, 0)
-            #print(config['name'])
+            if row is not None:
+                config = Config.from_dict(row)
+                #Config(row['configId'], row['name'], row['proportional'], row['integral'], row['differential'])
+            else:
+                print("Error: No default config set")
+                print("Returning default config...")
+                config = Config(0, 'Default', 0, 0, 0)
+                self.newConfig(config)
+                self.setDefault(config.configId)
             return config
+        except Exception as e:
+           print(f"Error: {e}")
 
     def getConfig(self, configId: int):
         self.cursor.execute(f"SELECT * FROM CONFIGS WHERE configId == '{configId}'") 
         row = self.cursor.fetchone()
-        return row
+        config = Config.from_dict(row)
+        return config
     
     def addSensor(self, sensor: Sensor): 
         # Inserts a Sensor into the database
@@ -175,9 +221,9 @@ class SlapStore():
         self.connection.commit()
         return trip
 
-    def getTrip(self, dateTime):
+    def getTrip(self, tripId: int):
         # returns all information on a trip using the tripId and BoatId as the identifier
-        self.cursor.execute(f"SELECT * FROM Trip WHERE timeStarted == {dateTime}")
+        self.cursor.execute(f"SELECT * FROM Trip WHERE tripId == '{tripId}'")
         row = self.cursor.fetchone()
         return row
     
@@ -215,7 +261,7 @@ class SlapStore():
             data.append(num_list)
             print(data)
         return data
-
+    
  
     def getReading(self, sensor_id: int, trip_id: int):
         # Returns all Reading information using the sensorId and TripId as identifiers
@@ -232,3 +278,18 @@ class SlapStore():
     def dropAllTables(self):
         # Deletes all tables
         self.cursor.execute(f"DROP TABLE *")
+
+    def listTrips(self):
+        # Returns all trips from the database
+        self.cursor.execute("SELECT * FROM Trip")
+        rows = self.cursor.fetchall()
+        trips = []
+        for row in rows:
+            trips.append({
+                'tripId': row['tripId'],
+                'configId': row['configId'],
+                'timeStarted': row['timeStarted'],
+                'timeEnded': row['timeEnded'],
+                'distanceTravelled': row['distanceTravelled']
+            })
+        return trips
