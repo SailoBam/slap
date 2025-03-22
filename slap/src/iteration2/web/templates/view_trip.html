@@ -1,46 +1,71 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Trip</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-    <div class="form-container">
-        <h2>Trip Details</h2>
+    <div class="burger-menu">
+        <div class="burger-icon" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="menu-overlay" id="menuOverlay">
+            <div class="menu-content">
+                <a href="/">Home</a>
+                <a href="configs">Configs</a>
+                <a href="trips">Trips</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1 style="text-align: right;">Trip Details</h1>
         <div class="trip-details">
             <div class="detail-group">
                 <label>Start Time:</label>
                 <span>{{ trip.timeStarted }}</span>
-            </div> <br>
+            </div>
             
             <div class="detail-group">
                 <label>End Time:</label>
                 <span>{{ trip.timeEnded }}</span>
-            </div> <br>
+            </div>
             
             <div class="detail-group">
                 <label>Distance Travelled:</label>
                 <span>{{ trip.distanceTravelled }} meters</span>
-            </div> <br>
-
-            <!--<div class="detail-group">
-                <label>Configuration Used:</label>
-                <span>{{ config.name }}</span>
-            </div> <br>-->
+            </div>
         </div>
         
-        <div class="buttons">
-            <a href="{{ url_for('trips') }}" class="button cancel" style="text-decoration: none;">Back to Trips</a>
+        <div id="tripChart" class="chart-container"></div>
+        
+        <div class="button-container">
+            <a href="{{ url_for('trips') }}" class="button cancel">Back to Trips</a>
         </div>
     </div>
 
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script>
+        function toggleMenu() {
+            const overlay = document.getElementById('menuOverlay');
+            overlay.classList.toggle('active');
+        }
+
+        // Close menu when clicking outside
+        document.getElementById('menuOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+            }
+        });
+
         // Get trip data from the server
         fetch('/api/trip/{{ trip.tripId }}/data')
             .then(response => response.json())
             .then(data => {
-                // Create the chart using Plotly
                 const trace = {
                     x: data.timestamps,
                     y: data.distances,

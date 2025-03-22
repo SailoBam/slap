@@ -1,52 +1,89 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <script src="{{ url_for('static', filename='js/angle.js') }}"></script>
 
-
 <head>
-    <title>Change Value</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLAP - Self Logging Auto Pilot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 
-<div>
-      <a href="configs" class="buttons"><button>Configs</button></a>
-      <a href="trips" class="buttons"><button>Trips</button></a>
-</div> <hr>
-
 <body>
-    <div>
-        Angle: <div id="angle">0</div>
+    <div class="burger-menu">
+        <div class="burger-icon" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="menu-overlay" id="menuOverlay">
+            <div class="menu-content">
+                <a href="configs">Configs</a>
+                <a href="trips">Trips</a>
+            </div>
+        </div>
     </div>
-    <button onclick="changeValue(10)">+10</button>
-    <!-- These buttons run the changeValue function in the javascript-->
-    <button onclick="changeValue(-10)">-10</button><br><br>
 
-    <label for="directionSet">Set Direction:</label>
-    <input type="int" id="directionSet" name="directionSet">
-    <button onclick="setValue(parseInt(document.getElementById('directionSet').value))">Set Direction</button><br><br>
-    <!-- This the is the SVG to display the compass and the two lines -->
-    <svg width="200" height="200" xmlns="http://www.w3.org/2000/svg" >
-       <image href="{{ url_for('static', filename='images/compass-rose.png') }}" x="0" y="0" width="200" height="200" opacity = "0.5"/> 
-        <line id = target
-              x1="100" y1="100" 
-              x2="100" y2="40" 
-              style="stroke:rgb(255, 0, 0);stroke-width:3"
-              transform="rotate(0, 50, 50)" />
-        <line id = actual 
-              x1="100" y1="100" 
-              x2="100" y2="50" 
-              style="stroke:rgb(0, 0, 255);stroke-width:3"
-              transform="rotate(0, 50, 50)" />
-        <line id = tiller
-              x1="100" y1="100" 
-              x2="100" y2="75" 
-              style="stroke:rgb(0, 255, 0);stroke-width:2"
-              transform="rotate(0, 50, 50)" />
-      </svg>
-      <div>
-            <button id = loggingButton onclick="toggleLogging()">START</button> <br><br>
-    <!-- This button start and stop logging in the javascript-->
-   
-      </div>
+    <div class="container">
+
+        <div class="angle-control">
+            <div class="angle-display">
+                Angle: <div id="angle">0</div>
+            </div>
+            <div class="angle-buttons">
+                <button onclick="changeValue(-10)">-10</button>
+                <button onclick="changeValue(-1)">-1</button>
+                <button onclick="changeValue(1)">+1</button>
+                <button onclick="changeValue(10)">+10</button>
+            </div>
+        </div>
+
+        <div class="direction-control">
+            <label for="directionSet">Set Direction:</label>
+            <input type="number" id="directionSet" name="directionSet">
+            <button onclick="setValue(parseInt(document.getElementById('directionSet').value))">Set Direction</button>
+        </div>
+
+        <div class="compass-container">
+            <svg width="200" height="200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+                <image href="{{ url_for('static', filename='images/compass-rose.png') }}" x="0" y="0" width="200" height="200" opacity="0.5"/> 
+                <line id="target"
+                    x1="100" y1="100" 
+                    x2="100" y2="40" 
+                    style="stroke:rgb(255, 0, 0);stroke-width:3"
+                    transform="rotate(0, 50, 50)" />
+                <line id="actual" 
+                    x1="100" y1="100" 
+                    x2="100" y2="50" 
+                    style="stroke:rgb(0, 0, 255);stroke-width:3"
+                    transform="rotate(0, 50, 50)" />
+                <line id="tiller"
+                    x1="100" y1="100" 
+                    x2="100" y2="75" 
+                    style="stroke:rgb(0, 255, 0);stroke-width:2"
+                    transform="rotate(0, 50, 50)" />
+            </svg>
+        </div>
+
+        <div class="logging-control">
+            <button id="loggingButton" onclick="toggleLogging()">START</button>
+        </div>
+    </div>
+
+    <script>
+        function toggleMenu() {
+            const overlay = document.getElementById('menuOverlay');
+            overlay.classList.toggle('active');
+        }
+
+        // Close menu when clicking outside
+        document.getElementById('menuOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+            }
+        });
+    </script>
 </body>
 
 </html>

@@ -1,56 +1,79 @@
 <!DOCTYPE html>
-<html>
-    <div>
-        <a href="/" class="button"><button>Home</button></a>
-    </div> <hr>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SLAP Config</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-    <h1>SLAP Config</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>P</th>
-                <th>I</th>
-                <th>D</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for config in configs %}
-            <tr configId="row-{{ config.configId }}">
-                <td>{{ config.name }}</td>
-                <td>{{ config.proportional }}</td>
-                <td>{{ config.integral }}</td>
-                <td>{{ config.differential }}</td>
-                <td class="actions">
-                    <a href="{{ url_for('edit', configId=config.configId) }}" class="button edit">Edit</a>
-                    <button onclick="selectconfig({{config.configId}})" class="button select">Select</button>
-                    <button onclick="deleteConfig({{config.configId}})" class="button delete">Delete</button>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table> <br>
-    <div>
-        <a href="{{ url_for('edit', configId=0) }}" class="button edit">New Config</a><br><br>
+    <div class="burger-menu">
+        <div class="burger-icon" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="menu-overlay" id="menuOverlay">
+            <div class="menu-content">
+                <a href="/">Home</a>
+                <a href="configs">Configs</a>
+                <a href="trips">Trips</a>
+            </div>
+        </div>
     </div>
-    
+
+    <div class="container">
+        <h1 style="text-align: right;">SLAP Config</h1>
+        <table class="configs-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>P</th>
+                    <th>I</th>
+                    <th>D</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for config in configs %}
+                <tr configId="row-{{ config.configId }}">
+                    <td>{{ config.name }}</td>
+                    <td>{{ config.proportional }}</td>
+                    <td>{{ config.integral }}</td>
+                    <td>{{ config.differential }}</td>
+                    <td class="actions">
+                        <a href="{{ url_for('edit', configId=config.configId) }}" class="button edit">Edit</a>
+                        <button onclick="selectconfig({{config.configId}})" class="button select">Select</button>
+                        <button onclick="deleteConfig({{config.configId}})" class="button delete">Delete</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="button-container">
+            <a href="{{ url_for('edit', configId=0) }}" class="button edit">New Config</a>
+        </div>
+    </div>
 
     <script>
+        function toggleMenu() {
+            const overlay = document.getElementById('menuOverlay');
+            overlay.classList.toggle('active');
+        }
+
+        // Close menu when clicking outside
+        document.getElementById('menuOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+            }
+        });
+
         function selectconfig(configId) {
-            // Remove previously selected row highlighting
-            console.log(configId)
             document.querySelectorAll('tr').forEach(row => {
                 row.classList.remove('selected');
             });
             
-            // Highlight the selected row
-            //document.getElementById('row-' + configId).classList.add('selected');
-            
-            // Send the selection to the server
             fetch('/select/' + configId, {
                 method: 'POST',
             })
@@ -62,8 +85,7 @@
                 console.error('Error:', error);
             });
         }
-    </script>
-    <script>
+
         function deleteConfig(configId) {
             fetch('/delete/' + configId, {
                 method: 'POST',

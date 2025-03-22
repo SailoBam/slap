@@ -1,18 +1,245 @@
+/* Base styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.4;
+    padding: 10px;
+    background-color: #f5f5f5;
+}
+
+/* Burger Menu Styles */
+.burger-menu {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+}
+
+.burger-icon {
+    width: 30px;
+    height: 20px;
+    position: relative;
+    cursor: pointer;
+}
+
+.burger-icon span {
+    display: block;
+    position: absolute;
+    height: 3px;
+    width: 100%;
+    background: #008CBA;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+}
+
+.burger-icon span:nth-child(1) { top: 0; }
+.burger-icon span:nth-child(2) { top: 8px; }
+.burger-icon span:nth-child(3) { top: 16px; }
+
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    z-index: 999;
+}
+
+.menu-overlay.active {
+    display: block;
+}
+
+.menu-content {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100%;
+    background-color: white;
+    padding: 60px 20px;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+
+.menu-content a {
+    display: block;
+    padding: 15px;
+    color: #008CBA;
+    text-decoration: none;
+    font-size: 1.2em;
+    border-bottom: 1px solid #eee;
+}
+
+.menu-content a:hover {
+    background-color: #f5f5f5;
+}
+
+/* Container styles */
+.container {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 15px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Navigation buttons */
+.nav-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+/* Angle control section */
+.angle-control {
+    margin: 15px 0;
+    text-align: center;
+}
+
+.angle-display {
+    font-size: 1.1em;
+    margin-bottom: 8px;
+}
+
+.angle-buttons {
+    display: flex;
+    gap: 3px;
+    justify-content: center;
+    margin: 8px 0;
+}
+
+/* Direction control section */
+.direction-control {
+    margin: 15px 0;
+    text-align: center;
+}
+
+.direction-control input {
+    width: 80px;
+    margin: 0 8px;
+    padding: 6px;
+}
+
+/* Compass container */
+.compass-container {
+    display: flex;
+    justify-content: center;
+    margin: 15px 0;
+}
+
+.compass-container svg {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Logging control */
+.logging-control {
+    text-align: center;
+    margin: 15px 0;
+}
+
+/* Button styles */
+button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    background-color: #008CBA;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 14px;
+}
+
+/* Form styles */
+input {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+/* Mobile responsiveness */
+@media screen and (max-width: 600px) {
+    body {
+        padding: 5px;
+    }
+
+    .container {
+        padding: 10px;
+        border-radius: 0;
+    }
+
+    th, td {
+        padding: 6px;
+        font-size: 13px;
+    }
+
+    .button {
+        padding: 5px 8px;
+        font-size: 12px;
+    }
+
+    .angle-buttons button {
+        padding: 6px 10px;
+        font-size: 13px;
+        max-width: 70px;
+    }
+
+    .direction-control input {
+        width: 70px;
+        padding: 5px;
+    }
+
+    .compass-container svg {
+        width: 130px;
+        height: 130px;
+    }
+}
+
 /* Table styles */
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
+    margin-top: 15px;
+    background-color: white;
+    table-layout: fixed;
 }
 
 th, td {
     padding: 8px;
     text-align: left;
     border-bottom: 1px solid #ddd;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 14px;
 }
+
+/* Configs table column widths */
+.configs-table th:nth-child(1) { width: 25%; }  /* Name column */
+.configs-table th:nth-child(2) { width: 15%; }  /* P column */
+.configs-table th:nth-child(3) { width: 15%; }  /* I column */
+.configs-table th:nth-child(4) { width: 15%; }  /* D column */
+.configs-table th:nth-child(5) { width: 30%; }  /* Actions column */
+
+/* Trips table column widths */
+.trips-table th:nth-child(1) { width: 12%; }  /* Config column */
+.trips-table th:nth-child(2) { width: 22%; }  /* Start column */
+.trips-table th:nth-child(3) { width: 22%; }  /* End column */
+.trips-table th:nth-child(4) { width: 12%; }  /* Distance column */
+.trips-table th:nth-child(5) { width: 32%; }  /* Actions column */
 
 th {
     background-color: #f2f2f2;
+    font-weight: bold;
 }
 
 tr:hover {
@@ -22,16 +249,25 @@ tr:hover {
 /* Button and action styles */
 .actions {
     display: flex;
-    gap: 10px;
+    gap: 3px;
+    flex-wrap: nowrap;
 }
 
 .button {
-    padding: 5px 10px;
+    padding: 6px 8px;
     text-decoration: none;
-    color: rgb(255, 255, 255);
-    border-radius: 3px;
+    color: white;
+    border-radius: 4px;
     cursor: pointer;
     border: none;
+    font-size: 13px;
+    transition: background-color 0.3s;
+    white-space: nowrap;
+}
+
+.button-container {
+    margin-top: 20px;
+    text-align: center;
 }
 
 .edit {
@@ -42,11 +278,15 @@ tr:hover {
     background-color: #008CBA;
 }
 
+.delete {
+    background-color: #f44336;
+}
+
 .selected {
     background-color: #0084ff;
 }
 
-/* Form styles */
+/* Form container styles */
 .form-container {
     max-width: 500px;
     margin: 20px auto;
@@ -62,14 +302,6 @@ tr:hover {
 label {
     display: block;
     margin-bottom: 5px;
-}
-
-input {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 3px;
-    box-sizing: border-box;
 }
 
 .buttons {
@@ -90,15 +322,97 @@ input {
 
 .view {
     background-color: #949494;
-    padding: 10px 20px;
+    padding: 6px 8px;
 } 
 
 .upload {
     background-color: #0084ff;
-    padding: 10px 20px;
+    padding: 6px 8px;
 } 
 
 .delete {
     background-color: #f44336;
     padding: 10px 20px;
+} 
+
+/* Mobile responsiveness */
+@media screen and (max-width: 600px) {
+    table {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .actions {
+        flex-direction: row;
+        gap: 3px;
+    }
+
+    .button {
+        padding: 5px 6px;
+        font-size: 12px;
+        min-width: 70px;
+    }
+
+    th, td {
+        padding: 6px;
+        font-size: 13px;
+    }
+}
+
+/* Trip Details Styles */
+.trip-details {
+    margin: 20px 0;
+    padding: 15px;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+}
+
+.detail-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.detail-group:last-child {
+    border-bottom: none;
+}
+
+.detail-group label {
+    font-weight: bold;
+    color: #333;
+}
+
+.detail-group span {
+    color: #666;
+}
+
+.chart-container {
+    width: 100%;
+    height: 400px;
+    margin: 20px 0;
+    padding: 15px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Mobile responsiveness */
+@media screen and (max-width: 600px) {
+    .trip-details {
+        padding: 10px;
+    }
+
+    .detail-group {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    .chart-container {
+        height: 300px;
+        padding: 10px;
+    }
 } 

@@ -1,48 +1,74 @@
 <!DOCTYPE html>
-<html>
-    <div>
-        <a href="/" class="button"><button>Home</button></a>
-    </div> <hr>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SLAP Trips</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-    <h1>SLAP Trips</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Config</th>
-                <th>Start</th>
-                <th>End</th>
-                <th>Distance</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for trip in trips %}
-            <tr tripId="row-{{ trip.tripId }}">
-                <td>{{ trip.configId }}</td>
-                <td>{{ trip.timeStarted }}</td>
-                <td>{{ trip.timeEnded }}</td>
-                <td>{{ trip.distanceTravelled }}</td>
-                <td class="actions">
-                    <a href="{{ url_for('view_trip', tripId=trip.tripId) }}" class="button view">View</a>
-                    <button onclick="uploadTripData({{trip.tripId}})" class="button upload">Upload Data</button>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table> <br>
-   
+    <div class="burger-menu">
+        <div class="burger-icon" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="menu-overlay" id="menuOverlay">
+            <div class="menu-content">
+                <a href="/">Home</a>
+                <a href="configs">Configs</a>
+                <a href="trips">Trips</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1 style="text-align: right;">SLAP Trips</h1>
+        <table class="trips-table">
+            <thead>
+                <tr>
+                    <th>Config</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Distance</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for trip in trips %}
+                <tr tripId="row-{{ trip.tripId }}">
+                    <td>{{ trip.configId }}</td>
+                    <td>{{ trip.timeStarted }}</td>
+                    <td>{{ trip.timeEnded }}</td>
+                    <td>{{ trip.distanceTravelled }}</td>
+                    <td class="actions">
+                        <a href="{{ url_for('view_trip', tripId=trip.tripId) }}" class="button view">View</a>
+                        <button onclick="uploadTripData({{trip.tripId}})" class="button upload">Upload Data</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
     <script>
-        function uploadTripData(tripId) {
+        function toggleMenu() {
+            const overlay = document.getElementById('menuOverlay');
+            overlay.classList.toggle('active');
+        }
 
+        // Close menu when clicking outside
+        document.getElementById('menuOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+            }
+        });
+
+        function uploadTripData(tripId) {
+            // Your upload functionality here
         }
 
         function viewTripDetails(tripId) {
-            // Navigate to trip details page
             window.location.href = '/trip_details/' + tripId;
         }
     </script>

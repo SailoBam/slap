@@ -40,19 +40,12 @@ class WebServer:
             print({'trips': trips})
             return {'trips': trips}
 
-        def save_configs(data):
-            with open('C:/Users/franc/vscode/projects/slap/slap/src/iteration2/data.json', 'w') as f:
-                json.dump(data, f, indent=4)
 
         @app.route("/")
         def home():
             # Default Route
             return render_template('index.html')
 
-        @app.route("/config")
-        def config():
-            # Route for adding a boat
-            return render_template('config.html')
 
         @app.route('/api/setDirection', methods=['PUT'])
         def setDirection():
