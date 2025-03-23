@@ -36,7 +36,6 @@ class Logger:
         self.store.endTrip(self.trip)
         # Write to map manager
         readings = self.store.getLog(self.trip)
-        self.map_manager.uploadToMapbox(f"Slap Trip ID: {self.trip.tripId}", readings)
 
 
 

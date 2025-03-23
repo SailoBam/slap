@@ -223,7 +223,8 @@ class SlapStore():
         # returns all information on a trip using the tripId and BoatId as the identifier
         self.cursor.execute(f"SELECT * FROM Trip WHERE tripId == '{tripId}'")
         row = self.cursor.fetchone()
-        return row
+        trip = Trip.from_dict(row)
+        return trip
     
     def endTrip(self, trip: Trip):
         try:

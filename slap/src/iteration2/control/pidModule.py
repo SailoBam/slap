@@ -2,7 +2,7 @@ from utils.headings import angularDiff
 from services.slapStore import Config
 class PidController:
 
-    def __init__(self,KP,KI,KD):
+    def __init__(self,KP,KI,KD, LIMIT_OF_CONTROL):
         # Imports the gains to be used
         self.kp = KP
         self.ki = KI
@@ -12,6 +12,8 @@ class PidController:
         self.elapsed = 0
         self.time = 0
         self.previous_time = 0
+        self.LIMIT_OF_CONTROL = LIMIT_OF_CONTROL
+
 
     def pid(self, pos: int, target: int, time: int):
         self.time = time
@@ -51,7 +53,7 @@ class PidController:
         self.previous_time = self.time
     
         # Returns the addition of all these values adjusted using the gains
-        return (self.kp * proportional + self.ki * intergal + self.kd * differential) / 30
+        return (self.kp * proportional + self.ki * intergal + self.kd * differential) / self.LIMIT_OF_CONTROL
     
     def reset(self):
         self.accumlatedError = 0

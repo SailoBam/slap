@@ -21,7 +21,7 @@ class AutoPilot():
         self.proportional = 0
         self.integral = 0
         self.differential = 0 
-        self.pid_controller = PidController( self.proportional, self.integral, self.differential)
+        self.pid_controller = PidController( self.proportional, self.integral, self.differential, LIMIT_OF_CONTROL)
 
         self.target_heading = 0
         self.decoder = Decoder()

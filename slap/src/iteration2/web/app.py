@@ -54,7 +54,9 @@ class WebServer:
                 # Get data from request
                 heading = request.get_data().decode('utf-8')
                 #print("Received data:", heading)
-
+                if int(heading) < 0 or int(heading) > 360:
+                    response_data = {"angle": "Enter a value between 0 and 360"}
+                    return jsonify(response_data), 200
                 # Update desired heading, returns the new actual heading
                 heading = self.auto_pilot.setHeading(int(heading))
 
@@ -224,5 +226,13 @@ class WebServer:
         def stopPilot():
             self.auto_pilot.stop()
             return jsonify({'message': 'Pilot stopped'})
+        
+        @app.route('/api/uploadTrip/<int:tripId>', methods=['GET'])
+        def uploadTrip(tripId):
+            trip = self.store.getTrip(tripId)
+            readings = self.store.getLog(trip)
+            self.logger.map_manager.uploadToMapbox(f"Slap Trip ID: {trip.tripId}", readings)
+            
+            return jsonify({'message': 'Trip uploaded'})
     
         return app

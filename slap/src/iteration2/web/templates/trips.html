@@ -66,6 +66,12 @@
 
         function uploadTripData(tripId) {
             // Your upload functionality here
+            fetch(`/api/uploadTrip/${tripId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
         }
 
         function viewTripDetails(tripId) {

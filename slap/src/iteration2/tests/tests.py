@@ -10,6 +10,7 @@ from tests.test_startStopAutoPilot import test_start_runs_update
 from tests.test_adjustAutoPilot import test_adjust_target_angle
 from services.slapStore import SlapStore, Config
 from tests.test_startStopLogging import test_startStopLogging_creates_new_trip
+from tests.test_setAutoPilot import test_set_direction
 
 class Test(unittest.TestCase):
     def setUp(self):
@@ -98,6 +99,9 @@ class Test(unittest.TestCase):
 
     def test_loggerStartStop(self):
         test_startStopLogging_creates_new_trip(self)
+        
+    def test_setAutoPilot(self):
+        test_set_direction(self)
 
 if __name__ == '__main__':
     unittest.main() 
