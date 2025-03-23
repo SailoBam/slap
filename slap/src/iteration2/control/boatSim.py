@@ -1,4 +1,3 @@
-import msvcrt
 from geopy.distance import geodesic
 from geopy.point import Point
 import sys
