@@ -96,18 +96,28 @@ async function systemStatus(){
     console.log(sysStatus.status)
     console.log(sysStatus)
     button = document.getElementById('loggingButton')
-    setButtonStatus(sysStatus.status)
+    setButtonStatus(sysStatus)
 }
 
-function setButtonStatus(buttonStatus){
+function setButtonStatus(sysStatus){
     button = document.getElementById('loggingButton')
-    if (buttonStatus) {
-        button.textContent = "STOP"
+    if (sysStatus.status) {
+        button.textContent = "END"
         button.style.backgroundColor = "red"
     }
     else{
-        button.textContent = "START"
+        button.textContent = "LOG"
         button.style.backgroundColor = "green"
+    }
+    buttonStart = document.getElementById('startPilotButton')
+    buttonStop = document.getElementById('stopPilotButton')
+    if (sysStatus.pilotRunning) {
+        buttonStart.disabled = true;    
+        buttonStop.disabled = false;
+    }
+    else{
+        buttonStart.disabled = false;
+        buttonStop.disabled = true;
     }
 }
 
@@ -119,6 +129,17 @@ async function toggleLogging(){
     button = document.getElementById('loggingButton')
     setButtonStatus(logging_status)
 }
+
+async function startPilot(){
+    response = await fetch('/api/startPilot');
+    console.log(response)
+}
+
+async function stopPilot(){
+    response = await fetch('/api/stopPilot');
+    console.log(response)
+}
+
 
 async function updateAll(){
     updateCompass();

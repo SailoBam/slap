@@ -131,13 +131,17 @@ class WebServer:
         def systemStatus():
             if self.current_trip is None:
                 name = "No Trip"
+                running = self.logger.isRunning()
+                pilotRunning = self.auto_pilot.running
             else:
                 name = self.current_trip.name
-            running = self.logger.isRunning()
+                running = self.logger.isRunning()
+                pilotRunning = self.auto_pilot.running
             
             status = {
                 'status': running,
-                'tripName': name
+                'tripName': name,
+                'pilotRunning': pilotRunning
             }
             return jsonify(status), 200
 
@@ -210,5 +214,15 @@ class WebServer:
         def deleteConfig(configId):
             self.store.deleteConfig(configId)
             return redirect(url_for('index'))
+        
+        @app.route('/api/startPilot')
+        def startPilot():
+            self.auto_pilot.start()
+            return jsonify({'message': 'Pilot started'})
+        
+        @app.route('/api/stopPilot')
+        def stopPilot():
+            self.auto_pilot.stop()
+            return jsonify({'message': 'Pilot stopped'})
     
         return app

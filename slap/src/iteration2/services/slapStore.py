@@ -80,10 +80,10 @@ class Reading():
         
 class SlapStore():
        
-    def __init__(self):
+    def __init__(self, db_name: str):
         # Set up database and creates all necessary tables
-        print("Creating Database")
-        self.connection = sqlite3.connect("slap.db", check_same_thread=False)
+        # Use in-memory database if db_name is ":memory:"
+        self.connection = sqlite3.connect(db_name, check_same_thread=False)
         self.connection.row_factory = sqlite3.Row
         self.cursor = self.connection.cursor()
 
@@ -188,8 +188,6 @@ class SlapStore():
                 config = Config.from_dict(row)
                 #Config(row['configId'], row['name'], row['proportional'], row['integral'], row['differential'])
             else:
-                print("Error: No default config set")
-                print("Returning default config...")
                 config = Config(0, 'Default', 0, 0, 0)
                 self.newConfig(config)
                 self.setDefault(config.configId)
@@ -259,7 +257,6 @@ class SlapStore():
             num_list = list(map(float, pos_list))
             # Add positional list into waypoints list
             data.append(num_list)
-            print(data)
         return data
     
  

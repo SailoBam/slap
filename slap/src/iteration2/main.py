@@ -21,7 +21,7 @@ class Main():
         self.boat_sim = BoatSim()
         self.map_manager = MapManager()
         self.logger = Logger(self.gps, self.map_manager)
-        self.store = SlapStore()
+        self.store = SlapStore("slap.db")
 
 
         self.boat_sim.setGps(self.gps)

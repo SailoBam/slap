@@ -19,7 +19,7 @@ class BoatSim:
         # Imports the heading variable
         self.heading = 0.0
         self.running = False
-        self.speed_over_ground = 100 #knots
+        self.speed_over_ground = 5 #knots
         self.pos = Point(50.604531, -3.408637)
         # start simulation, at ~ exmouth safe water mark
 
