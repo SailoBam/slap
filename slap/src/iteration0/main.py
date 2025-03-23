@@ -9,7 +9,6 @@ from database.slapStore import Boat
 from database.slapStore import SlapStore
 from database.slapStore import Reading
 from datetime import datetime
-import msvcrt
 class MainLoop:
     heading = 83
     timeConstant = 0.5

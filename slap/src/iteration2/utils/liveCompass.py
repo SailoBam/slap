@@ -1,6 +1,5 @@
 import turtle
 import time
-import msvcrt
 
 class Visual:
 
@@ -24,17 +23,4 @@ class Visual:
         self.point.setheading(currentAngle)
         self.marker.setheading(target)
 
-        
-if __name__ == "__main__":
-    visual = Visual(60)
-    angle = 0
-    while True:
-        if msvcrt.kbhit():  # Check if a key was pressed
-            key = msvcrt.getch().decode('utf-8')  # Get the key
-            print(f"Key pressed: {key}")
-            if key == 'a':  # Exit condition
-                angle = angle + 10
-            elif key == 'd':
-                angle = angle - 10
-        visual.visualUpdate(angle)
         
