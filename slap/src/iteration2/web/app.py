@@ -53,14 +53,14 @@ class WebServer:
                 # Sets the target heading based on users input in web page
                 # Get data from request
                 heading = request.get_data().decode('utf-8')
-                print("Received data:", heading)
+                #print("Received data:", heading)
 
                 # Update desired heading, returns the new actual heading
                 heading = self.auto_pilot.setHeading(int(heading))
 
                 # Return JSON response
                 response_data = {"angle": str(heading)}
-                print("Heading", response_data)
+                #print("Heading", response_data)
 
                 return jsonify(response_data), 200
 
@@ -82,7 +82,7 @@ class WebServer:
                 # increments the target heading based on users input in web page
                 # Get data from request
                 change = request.get_data().decode('utf-8')
-                print("Received data:", change)
+                #print("Received data:", change)
 
                 # Update desired heading, returns the new actual heading
                 headings = self.auto_pilot.getHeadings()
@@ -95,7 +95,7 @@ class WebServer:
                
                 # Return JSON response
                 response_data = {"angle": str(heading)}
-                print("Heading", response_data)
+                #print("Heading", response_data)
 
                 return jsonify(response_data), 200
 

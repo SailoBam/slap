@@ -51,7 +51,7 @@ class PidController:
         self.previous_time = self.time
     
         # Returns the addition of all these values adjusted using the gains
-        return self.kp * proportional + self.ki * intergal + self.kd * differential
+        return (self.kp * proportional + self.ki * intergal + self.kd * differential) / 30
     
     def reset(self):
         self.accumlatedError = 0
