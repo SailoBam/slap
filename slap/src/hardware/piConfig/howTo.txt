@@ -1,0 +1,3 @@
+I followed the instructions on => https://www.geekering.com/categories/embedded-sytems/raspberry-pi/rubenmarques/how-to-use-neo-6m-gps-with-rpi-begginer-friendly/#google_vignette
+The gps is on /dev/ttyAMA0
+**NOT ttyAMA10 OR ttyS0**

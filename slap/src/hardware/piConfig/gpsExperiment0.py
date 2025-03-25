@@ -1,3 +1,4 @@
+from matplotlib.cbook import ls_mapper
 import serial
 import time
 import string
@@ -14,4 +15,5 @@ while True:
 		lat=newmsg.latitude
 		lng=newmsg.longitude
 		gps = "Latitude=" + str(lat) + "and Longitude=" + str(lng)
-		print(gps)
+		print(gps)  
+  
