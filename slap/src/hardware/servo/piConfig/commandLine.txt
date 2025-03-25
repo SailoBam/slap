@@ -1,0 +1,5 @@
+sudo nano /boot/cmdline.txt
+
+sudo cp /boot/cmdline.txt /boot/cmdline_backup.txt
+
+dwc_otg.lpm_enable=0 console=tty1 root=/dev/mmcblk0p2 rootfstype=ext4 elevator=deadline fsck.repair=yes rootwait quiet splash plymouth.ignore-serial-consoles
