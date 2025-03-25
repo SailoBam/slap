@@ -38,7 +38,7 @@ The user needs to be able to effectively use the software whilst under the somet
 
 # Data Sources and Outputs
 
-Incoming data would be from various sensors around the boat to read information about the environment and boat’s condition. This would include data such as wind direction and strength and potentially magnetic compass (magnetometer), movements (accelerometer). Information about the users desired destination and course would also be inputted into the system.
+Incoming data would be from various sensors around the boat to read information about the environment and boat’s condition. This would include optional data such as wind direction and strength and potentially magnetic compass (magnetometer), movements (accelerometer). Information about the users desired heading will be inputted into the system. The system needs to be easy to activate and deactivate incase of emergencies
 
 The primary output will drive the actuator which changes the boat's direction.
 
