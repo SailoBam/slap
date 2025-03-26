@@ -5,6 +5,9 @@ from transducers.tillerActuator import TillerActuator
 from threading import Thread
 from utils.nmea.nmeaDecoder import Decoder
 from utils.headings import angularDiff
+import time
+import math
+import random
 
 
 # If the difference between the target and actual heading is greater that
@@ -90,4 +93,3 @@ class AutoPilot():
     
     def getCurrentConfig(self):
         return self.config
-    

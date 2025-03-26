@@ -1,4 +1,8 @@
 #                               Project Entry Point                              # 
+
+
+    
+    
 from services.mapManager import MapManager
 from services.slapStore import SlapStore
 from control.autoPilot import AutoPilot
@@ -10,6 +14,9 @@ from services.logger import Logger
 import threading
 import time
 import atexit
+from transducers.temperature import Temperature
+from transducers.sensorRegister import SensorRegister
+from transducers.pressure import Pressure
 
 class Main():
 
@@ -32,6 +39,14 @@ class Main():
         
         # import the instances into the other modules,
         # ensuring only one common instance of each module is used
+        
+        # Start the sensors
+        temp_sensor = Temperature()
+        pressure_sensor = Pressure()
+        self.sensor_register = SensorRegister()
+        self.sensor_register.add_sensor(temp_sensor)
+        self.sensor_register.add_sensor(pressure_sensor)
+        self.sensor_register.run_sensors()
 
     def main(self):
 

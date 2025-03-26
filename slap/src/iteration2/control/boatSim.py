@@ -6,10 +6,7 @@ from threading import Thread
 import time
 import math
 import random
-# Temps
-from smbus2 import SMBus
-from bmp280 import BMP280
-from icm20948 import ICM20948
+
 
 
 # Used for the decay equation
@@ -42,28 +39,13 @@ class BoatSim:
         
 
     def dynamicsLoop(self):
-	# Temp
-        bus = SMBus(1)
-        bmp280 = BMP280(i2c_dev=bus)
-        imu = ICM20948()
-        X = 0
-        Y = 1
-        Z = 2
-        AXES = Y, Z
-
+	
         self.currentTimeMilli = int(round(time.time() * 1000))
         self.nextDisturbance = self.createDisturbance()
         self.previousTime = 0
         while self.running == True:
-            # Temp code
 
-            #Get Sensor Readings
-            temperature = bmp280.get_temperature()
-            pressure = bmp280.get_pressure()
-            print(f"{temperature:05.2f}*C {pressure:05.2f}hPa")
-            # Get Magnetometer
-            mag = list(imu.read_magnetometer_data())
-            print(mag)
+            
 		    
 
             # Preforms one iteration of the boats movements and ensures its a usable value
