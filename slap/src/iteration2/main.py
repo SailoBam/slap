@@ -60,7 +60,7 @@ class Main():
         webserver = WebServer(self.auto_pilot, self.logger) 
         app = webserver.create_server(self.store)
 
-        app.run(debug=True, use_reloader=False)
+        app.run(debug=True, use_reloader=False, port=5000, host='0.0.0.0')
 
 
 

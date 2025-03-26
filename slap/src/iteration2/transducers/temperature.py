@@ -1,6 +1,8 @@
 try:
     import RPi.GPIO as GPIO
-    import smbus
+    from smbus import SMBus
+    from bmp280 import BMP280
+
     IS_RPI = True
     print("Running on a Raspberry Pi")
 except (ImportError, ModuleNotFoundError, RuntimeError):
@@ -16,6 +18,7 @@ class Temperature(Sensor):
         super().__init__()  # This calls the parent class's __init__
         self.name = "Temperature Sensor"
         if IS_RPI:
+            print(IS_RPI)
             self.bus = SMBus(1)
             self.bmp280 = BMP280(i2c_dev=self.bus)
         else:
