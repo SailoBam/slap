@@ -28,12 +28,13 @@ class AutoPilot():
 
         self.target_heading = 0
         self.decoder = Decoder()
-        self.actual_heading = 0
-        self.tiller_angle = 0
+        self.actual_heading = 0.0
+        self.tiller_angle = 0.0
         self.config = None
         self.running = False
         
     def start(self):
+        self.pid_controller.reset()
         self.running = True
 
     def stop(self):
@@ -44,11 +45,10 @@ class AutoPilot():
         self.target_heading = input
         return self.target_heading
     
-    def getHeadings(self):
+    def getPilotValues(self):
         # Returns a dictionary of both heading values
         headings = {
             'target': self.target_heading,
-            'actual': self.actual_heading,
             'tiller': self.tiller_angle
         }
         return headings

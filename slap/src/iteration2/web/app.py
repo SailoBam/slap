@@ -1,9 +1,13 @@
 import os
 from flask import Flask, request, render_template, jsonify, g, redirect, url_for
+from flask.wrappers import Response
 from services.slapStore import SlapStore, Config, Trip
 from control.autoPilot import AutoPilot
 from utils.headings import compassify
 from services.logger import Logger
+from transducers.sensorRegister import SensorRegister
+from control.boatSim import BoatSim
+from transducers.gps import Gps
 import threading
 import queue
 import time
@@ -12,13 +16,15 @@ from datetime import datetime
 
 class WebServer:
 
-    def __init__(self, auto_pilot: AutoPilot, logger: Logger):
+    def __init__(self, auto_pilot: AutoPilot, logger: Logger, sensor_register: SensorRegister, boat_sim: BoatSim, gps: Gps):
         # Importing the Auto Pilot instance
         self.auto_pilot = auto_pilot
         self.logger = logger
+        self.sensor_register = sensor_register
         self.logging = False
         self.current_trip = None
-        
+        self.boat_sim = boat_sim
+        self.gps = gps
 
     def create_server(self, store: SlapStore):
 
@@ -73,9 +79,17 @@ class WebServer:
         @app.route('/api/headings', methods=['GET'])
         def get_headings():
             # Returns Headings (Target and Actual)
-            #headings = self.auto_pilot.getHeadings()
+            heading = self.gps.getHeading()
+            
+            # returns the tiller angle and the target heading
+            pilot_values = self.auto_pilot.getPilotValues()
             #print(headings['tiller'])
-            return jsonify(self.auto_pilot.getHeadings())
+            headings = {
+                'target': pilot_values['target'],
+                'tiller': pilot_values['tiller'],
+                'actual': heading
+            }
+            return jsonify(headings)
     
 
         @app.route('/api/addDirection', methods=['PUT'])
@@ -146,6 +160,22 @@ class WebServer:
                 'pilotRunning': pilotRunning
             }
             return jsonify(status), 200
+        
+        @app.route('/api/sensorReadings')
+        def sensorReadings():
+            readings = self.sensor_register.getReadings()
+            print(readings)
+            return jsonify(readings), 200
+
+        @app.route('/sensorsReadings')
+        def sensorsReadings():
+            data = self.sensor_register.get_sensors()
+            sensorName = []
+            for sensor in data:
+                sensorName.append(sensor.get_name())
+            print(sensorName)
+
+            return render_template('sensorsDisplay.html', sensors = sensorName)
 
         @app.route('/configs')
         def index():
@@ -156,6 +186,20 @@ class WebServer:
         def trips():
             data = load_trips()
             return render_template('trips.html', trips=data["trips"])
+
+        @app.route('/api/toggleSimulation', methods=['GET'])
+        def toggleSimulation():
+            try:
+                if self.boat_sim.running:
+                    self.boat_sim.stop()
+                    message = "Simulation stopped"
+                else:
+                    self.boat_sim.start()
+                    message = "Simulation started"
+                return jsonify({"message": message}), 200
+            except Exception as e:
+                print(f"Error processing request to toggle simulation: {str(e)}")
+                return jsonify({"error": str(e)}), 400
 
         @app.route('/view_trip/<int:tripId>', methods=['GET'])
         def view_trip(tripId):

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SLAP Config</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="{{ url_for('static', filename='js/burger.js') }}"></script>
 </head>
 <body>
     <div class="burger-menu">
@@ -18,6 +19,7 @@
                 <a href="/">Home</a>
                 <a href="configs">Configs</a>
                 <a href="trips">Trips</a>
+                <a href="sensorsReadings">Sensors</a>
             </div>
         </div>
     </div>
@@ -36,7 +38,7 @@
             </thead>
             <tbody>
                 {% for config in configs %}
-                <tr configId="row-{{ config.configId }}">
+                <tr configId="row-{{ config.configId }}" {% if config.isDefault %}class="selected"{% endif %}>
                     <td>{{ config.name }}</td>
                     <td>{{ config.proportional }}</td>
                     <td>{{ config.integral }}</td>
@@ -45,6 +47,7 @@
                         <a href="{{ url_for('edit', configId=config.configId) }}" class="button edit">Edit</a>
                         <button onclick="selectconfig({{config.configId}})" class="button select">Select</button>
                         <button onclick="deleteConfig({{config.configId}})" class="button delete">Delete</button>
+                        <button onclick="simulateConfig({{config.configId}})" class="button simulate">Simulate</button>
                     </td>
                 </tr>
                 {% endfor %}
@@ -57,22 +60,15 @@
     </div>
 
     <script>
-        function toggleMenu() {
-            const overlay = document.getElementById('menuOverlay');
-            overlay.classList.toggle('active');
-        }
-
-        // Close menu when clicking outside
-        document.getElementById('menuOverlay').addEventListener('click', function(e) {
-            if (e.target === this) {
-                this.classList.remove('active');
-            }
-        });
-
         function selectconfig(configId) {
+            // Highlight the selected row
             document.querySelectorAll('tr').forEach(row => {
-                row.classList.remove('selected');
+                if (row.configId !== `row-${configId}`) {
+                    row.classList.remove('selected');
+                }
             });
+            document.querySelector(`tr[configId="row-${configId}"]`).classList.add('selected');
+            
             
             fetch('/select/' + configId, {
                 method: 'POST',
@@ -101,6 +97,8 @@
                 console.error('Error:', error);
             });
         }
+
+        
     </script>
 </body>
 </html> 

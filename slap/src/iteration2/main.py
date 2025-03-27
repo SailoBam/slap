@@ -36,7 +36,6 @@ class Main():
         self.auto_pilot.setTillerActuator(self.tiller_actuator)
         self.tiller_actuator.setBoatSim(self.boat_sim)
         self.logger.setStore(self.store)
-        
         # import the instances into the other modules,
         # ensuring only one common instance of each module is used
         
@@ -49,15 +48,11 @@ class Main():
         self.sensor_register.run_sensors()
 
     def main(self):
-
-        # Init BoatSim
-        self.boat_sim.start()
-
         # Ensure the controller stops when the application exits
         atexit.register(self.boat_sim.stop)
 
         #Create and start Flask web server
-        webserver = WebServer(self.auto_pilot, self.logger) 
+        webserver = WebServer(self.auto_pilot, self.logger, self.sensor_register, self.boat_sim, self.gps) 
         app = webserver.create_server(self.store)
 
         app.run(debug=True, use_reloader=False, port=5000, host='0.0.0.0')

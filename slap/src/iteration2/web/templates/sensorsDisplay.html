@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLAP - Sensors</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="{{ url_for('static', filename='js/sensors.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/burger.js') }}"></script>
+</head>
+<body>
+    <div class="burger-menu">
+        <div class="burger-icon" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="menu-overlay" id="menuOverlay">
+            <div class="menu-content">
+                <a href="/">Home</a>
+                <a href="configs">Configs</a>
+                <a href="trips">Trips</a>
+                <a href="sensorsReadings">Sensors</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1 style="text-align: right;">Sensor Readings</h1>
+        <div class="sensors-grid">
+            {% for sensor in sensors %}
+            <div class="sensor-box">
+                <div class="sensor-name">{{ sensor }}</div>
+                <div id="{{ sensor }}" class="sensor-value">_</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
+

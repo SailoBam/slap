@@ -23,7 +23,7 @@ class Pressure(Sensor):
         self.running = False
         self.thread = None
 
-    def get_data(self):
+    def getData(self):
         """Return the latest pressure reading"""
         return self.pressure
 
@@ -48,7 +48,7 @@ class Pressure(Sensor):
                     self.pressure = self.bmp280.get_pressure()
                 else:
                     self.pressure = 1013.25  # Standard atmospheric pressure in hPa
-                print(f"{self.name}, Value: {self.get_data()}")
+                #print(f"{self.name}, Value: {self.getData()}")
                 time.sleep(0.1)  # Read pressure every 100ms
             except:
                 print("Error reading pressure sensor")

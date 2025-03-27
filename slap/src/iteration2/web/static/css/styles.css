@@ -293,7 +293,7 @@ tr:hover {
 }
 
 .selected {
-    background-color: #0084ff;
+    background-color: #a3d3ff;
 }
 
 /* Form container styles */
@@ -424,5 +424,53 @@ label {
     .chart-container {
         height: 300px;
         padding: 10px;
+    }
+}
+
+/* Sensor Grid Styles */
+.sensors-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.sensor-box {
+    background-color: #f8f8f8;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sensor-name {
+    text-align: right;
+    font-weight: bold;
+    color: #333;
+}
+
+.sensor-value {
+    text-align: left;
+    font-size: 1.2em;
+    color: #008CBA;
+    margin-right: 15px;
+}
+
+/* Mobile responsiveness for sensors */
+@media screen and (max-width: 600px) {
+    .sensors-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .sensor-box {
+        padding: 10px;
+    }
+
+    .sensor-value {
+        font-size: 1.1em;
+        margin-right: 10px;
     }
 } 

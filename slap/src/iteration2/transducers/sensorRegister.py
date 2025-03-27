@@ -18,3 +18,11 @@ class SensorRegister:
         for sensor in self.sensors:
             sensor.stop()
 
+    def getReadings(self):
+        readings = {}
+        for sensor in self.sensors:
+            readings[sensor.get_name()] = sensor.getData()
+            
+        return readings
+
+

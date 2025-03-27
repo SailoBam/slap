@@ -58,6 +58,8 @@ function setValue(c) {
         });
     }
 
+
+
 function updateHeading(a){
     console.log("update Heading: ", a)
     line = document.getElementById("actual")
@@ -99,6 +101,15 @@ async function systemStatus(){
     setButtonStatus(sysStatus)
 }
 
+
+async function sensorReadings(){
+    response = await fetch('/api/sensorReadings');
+    console.log(response)
+    sensorReadings = await response.json();
+    console.log(sensorReadings)
+}
+
+
 function setButtonStatus(sysStatus){
     button = document.getElementById('loggingButton')
     if (sysStatus.status) {
@@ -133,6 +144,19 @@ async function toggleLogging(){
 async function startPilot(){
     response = await fetch('/api/startPilot');
     console.log(response)
+}
+
+async function toggleSimulation() {
+    fetch('/api/toggleSimulation', {
+        method: 'GET',
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data.message);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
 }
 
 async function stopPilot(){

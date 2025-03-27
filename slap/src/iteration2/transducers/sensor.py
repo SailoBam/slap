@@ -11,7 +11,7 @@ class Sensor(ABC):
         self.name = name
 
     @abstractmethod
-    def get_data(self):
+    def getData(self):
         pass
 
     @abstractmethod

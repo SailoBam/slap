@@ -2,7 +2,6 @@ from control.boatSim import BoatSim
 import time
 try:
     from rpi_hardware_pwm import HardwarePWM
-    #import RPi.GPIO as GPIO
     IS_RPI = True
     print("Running motor from Pi")
 except (ImportError, ModuleNotFoundError, RuntimeError):
@@ -18,12 +17,6 @@ class TillerActuator():
     
     def __init__(self):
         if IS_RPI:
-            servoPIN = 18
-            #GPIO.setmode(GPIO.BCM)
-            #GPIO.setup(servoPIN, GPIO.OUT)
-
-            #self.p = GPIO.PWM(servoPIN, 50) # GPIO 18 for PWM with 50Hz
-            #self.p.start(0.5) # Initialization
             self.p = HardwarePWM(pwm_channel=2, hz=50,chip=2)
             self.p.start(100)
             self.cycle = 0

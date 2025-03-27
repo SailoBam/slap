@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Config</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="{{ url_for('static', filename='js/burger.js') }}"></script>
 </head>
 <body>
     <div class="burger-menu">
@@ -55,19 +56,5 @@
             </form>
         </div>
     </div>
-
-    <script>
-        function toggleMenu() {
-            const overlay = document.getElementById('menuOverlay');
-            overlay.classList.toggle('active');
-        }
-
-        // Close menu when clicking outside
-        document.getElementById('menuOverlay').addEventListener('click', function(e) {
-            if (e.target === this) {
-                this.classList.remove('active');
-            }
-        });
-    </script>
 </body>
 </html> 

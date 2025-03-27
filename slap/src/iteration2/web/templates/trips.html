@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SLAP Trips</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="{{ url_for('static', filename='js/burger.js') }}"></script>
 </head>
 <body>
+    
     <div class="burger-menu">
         <div class="burger-icon" onclick="toggleMenu()">
             <span></span>
@@ -18,6 +20,7 @@
                 <a href="/">Home</a>
                 <a href="configs">Configs</a>
                 <a href="trips">Trips</a>
+                <a href="sensorsReadings">Sensors</a>
             </div>
         </div>
     </div>
@@ -52,18 +55,6 @@
     </div>
 
     <script>
-        function toggleMenu() {
-            const overlay = document.getElementById('menuOverlay');
-            overlay.classList.toggle('active');
-        }
-
-        // Close menu when clicking outside
-        document.getElementById('menuOverlay').addEventListener('click', function(e) {
-            if (e.target === this) {
-                this.classList.remove('active');
-            }
-        });
-
         function uploadTripData(tripId) {
             // Your upload functionality here
             fetch(`/api/uploadTrip/${tripId}`, {

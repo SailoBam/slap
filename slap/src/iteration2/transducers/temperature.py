@@ -26,7 +26,7 @@ class Temperature(Sensor):
         self.running = False
         self.thread = None
 
-    def get_data(self):
+    def getData(self):
         """Return the latest temperature reading"""
         return self.temperature
 
@@ -51,7 +51,7 @@ class Temperature(Sensor):
                     self.temperature = self.bmp280.get_temperature()
                 else:
                     self.temperature = 20
-                print(f"{self.name}, Value: {self.get_data()}")
+                #print(f"{self.name}, Value: {self.getData()}")
                 time.sleep(0.1)  # Read temperature every 100ms
             except:
                 print("Error reading temperature sensor")

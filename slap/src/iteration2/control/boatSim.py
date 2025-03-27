@@ -10,7 +10,7 @@ import random
 
 
 # Used for the decay equation
-TIMECONSTANT = 0.1
+TIMECONSTANT = 0.333333
 MAX_DISTURBANCE_DURATION = 5000 # ms
 MIN_DISTURBANCE_DURATION = 2000 # ms
 MAX_DISTURBANCE_MAGNITUDE = 20 # degrees per second
@@ -42,6 +42,7 @@ class BoatSim:
 	
         self.currentTimeMilli = int(round(time.time() * 1000))
         self.nextDisturbance = self.createDisturbance()
+        print("nextDisturbance", self.nextDisturbance)
         self.previousTime = 0
         while self.running == True:
 
@@ -59,33 +60,37 @@ class BoatSim:
             # Calculate new long/lat based on distance travelled and current heading
             newPos = self.getNewPosition(self.pos, self.speed_over_ground, self.heading, dt)
             disturbance = self.disturbance()
-            #print(disturbance)
+            
+            print("disturbance", disturbance)
 
             yawRate = (1 / TIMECONSTANT) * self.rudderAngle + disturbance
-
-
+            if yawRate > 0 or yawRate < 0:
+                print("yawRate", yawRate)
             # ψ(t) = ψ(0) + δ * [t/T + (exp(-t/T) - 1)]
          
-            newHead = (self.heading + yawRate * (dt / TIMECONSTANT + (math.exp(-dt / TIMECONSTANT) - 1)))
-
+            newHead = (self.heading + yawRate * (dt / TIMECONSTANT + (math.exp(-dt / TIMECONSTANT) - 1))) % 360
+            print("newHead", newHead)
               
             self.gps.update(newHead, str(newPos.longitude), str(newPos.latitude), self.currentTimeMilli)
             self.heading = newHead
             self.pos = newPos
+            self.previousTime = self.currentTimeMilli
 
 
     def disturbance(self):
         currentTimeMilli = int(round(time.time() * 1000))
 
         if (currentTimeMilli < self.nextDisturbance['startTime']):
+            #print("nextDisturbance['startTime']", self.nextDisturbance['startTime'])
+            print("time until disturbance",self.nextDisturbance['startTime'] - currentTimeMilli)
             #print("Before")
             return 0
         elif currentTimeMilli > self.nextDisturbance['startTime'] and currentTimeMilli < self.nextDisturbance['endTime']:
-            #print("During")
-            #print("time left: " , (self.nextDisturbance['endTime'] - currentTimeMilli))
+            print("During")
+            print("time left: " , (self.nextDisturbance['endTime'] - currentTimeMilli))
             return self.nextDisturbance['disturbance']
         else:
-            #print("After")
+            print("After")
             self.nextDisturbance = self.createDisturbance()
             return 0
     
@@ -95,9 +100,9 @@ class BoatSim:
 
     def createDisturbance(self):
         currentTimeMilli = int(round(time.time() * 1000))
-        endTime = currentTimeMilli + random.randint(MIN_DISTURBANCE_DURATION,MAX_DISTURBANCE_DURATION)
         disturbance =  random.randint(-MAX_DISTURBANCE_MAGNITUDE, MAX_DISTURBANCE_MAGNITUDE)
-        startTime = currentTimeMilli + random.randint(2 * MAX_DISTURBANCE_DURATION, 5 * MAX_DISTURBANCE_DURATION)
+        startTime = currentTimeMilli + random.randint( MAX_DISTURBANCE_DURATION, 2 * MAX_DISTURBANCE_DURATION)
+        endTime = startTime + random.randint(MIN_DISTURBANCE_DURATION,MAX_DISTURBANCE_DURATION)
         output = {'endTime': endTime,
                 'disturbance': disturbance,
                 'startTime': startTime}
