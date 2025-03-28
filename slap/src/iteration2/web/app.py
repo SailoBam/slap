@@ -163,19 +163,16 @@ class WebServer:
         
         @app.route('/api/sensorReadings')
         def sensorReadings():
-            readings = self.sensor_register.getReadings()
+            readings = self.sensor_register.getSensorReadings()
             print(readings)
             return jsonify(readings), 200
 
         @app.route('/sensorsReadings')
         def sensorsReadings():
-            data = self.sensor_register.get_sensors()
-            sensorName = []
-            for sensor in data:
-                sensorName.append(sensor.get_name())
-            print(sensorName)
+            data = self.sensor_register.getSensorReadings()
+            print(data)
 
-            return render_template('sensorsDisplay.html', sensors = sensorName)
+            return render_template('sensorsDisplay.html', sensorReadings = data)
 
         @app.route('/configs')
         def index():

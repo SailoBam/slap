@@ -7,47 +7,33 @@ except (ImportError, ModuleNotFoundError, RuntimeError):
     print("Not running on a Raspberry Pi")
     IS_RPI = False
 
-from transducers.sensor import Sensor
+from transducers.transducer import Transducer
 import time
 import threading
+from transducers.sensor import Sensor
 
-class Pressure(Sensor):
+class Bmp280Transducer(Transducer):
     def __init__(self):
         super().__init__()  # This calls the parent class's __init__
-        self.name = "Pressure Sensor"
+        self.temperature = Sensor("Temperature", "°C")
+        self.pressure = Sensor("Pressure", "hPa")
+        self.sensors = [self.temperature, self.pressure]
+        self.running = False
         if IS_RPI:
             self.bus = SMBus(1)
             self.bmp280 = BMP280(i2c_dev=self.bus)
-        else:
-            self.pressure = 0
-        self.running = False
-        self.thread = None
 
-    def getData(self):
-        """Return the latest pressure reading"""
-        return self.pressure
-
-    def start(self):
-        """Start the pressure sensor thread"""
-        super().start()
-        self.thread = threading.Thread(target=self.run)
-        self.thread.daemon = True
-        self.thread.start()
-
-    def stop(self):
-        """Stop the pressure sensor thread"""
-        super().stop()
-        if self.thread:
-            self.thread.join()
 
     def run(self):
         """Main thread loop that continuously reads pressure"""
         while self.running:
             try:
                 if IS_RPI:
-                    self.pressure = self.bmp280.get_pressure()
+                    self.pressure.setData(str(self.bmp280.get_pressure()))
+                    self.temperature.setData(str(self.bmp280.get_temperature()))
                 else:
-                    self.pressure = 1013.25  # Standard atmospheric pressure in hPa
+                    self.pressure.setData("1013.25")  # Standard atmospheric pressure in hPa
+                    self.temperature.setData("20")
                 #print(f"{self.name}, Value: {self.getData()}")
                 time.sleep(0.1)  # Read pressure every 100ms
             except:

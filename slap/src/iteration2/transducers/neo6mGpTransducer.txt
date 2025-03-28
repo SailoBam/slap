@@ -1,0 +1,23 @@
+from sensor import Sensor
+import serial
+import time
+import string
+import pynmea2
+
+class Neo6mGpsTransducer(Transducer):
+    def __init__(self):
+        super().__init__()
+        self.heading = 0
+        port="/dev/ttyAMA0"
+        ser=serial.Serial(port, baudrate=9600, timeout=0.5)
+        dataout = pynmea2.NMEAStreamReader()
+        
+        print(newdataStr)
+
+    def getHeading(self):
+        self.heading = self.read()
+
+    def (self):
+        newdata=ser.readline()
+        newdata = newdata.decode('utf-8')
+        return self.heading

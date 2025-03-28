@@ -1,28 +1,35 @@
-from transducers.sensor import Sensor
+from transducers.transducer import Transducer
 
 class SensorRegister:
     def __init__(self):
-        self.sensors = []
+        self.transducers = []
 
-    def add_sensor(self, sensor: Sensor):
-        self.sensors.append(sensor)
-
-    def get_sensors(self):
-        return self.sensors
+    def add_transducer(self, transducer: Transducer):
+        self.transducers.append(transducer)
+        
+    def get_transducers(self):
+        return self.transducers
     
-    def run_sensors(self):
-        for sensor in self.sensors:
-            sensor.start()
+    def run_transducers(self):
+        for transducer in self.transducers:
+            transducer.start()
 
-    def stop_sensors(self):
-        for sensor in self.sensors:
-            sensor.stop()
+    def stop_transducers(self):
+        for transducer in self.transducers:
+            transducer.stop()
 
-    def getReadings(self):
-        readings = {}
-        for sensor in self.sensors:
-            readings[sensor.get_name()] = sensor.getData()
-            
-        return readings
+    def getSensorReadings(self):
+        sensors = []
+        for transducer in self.transducers:
+            for sensor in transducer.getSensors():
+                output = {
+                    "name": sensor.getName(),
+                    "value": sensor.getData(),
+                    "units": sensor.getUnits()
+                }
+                sensors.append(output)
+        return sensors
+    
+    
 
 

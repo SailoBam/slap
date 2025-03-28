@@ -14,10 +14,9 @@ from services.logger import Logger
 import threading
 import time
 import atexit
-from transducers.temperature import Temperature
 from transducers.sensorRegister import SensorRegister
-from transducers.pressure import Pressure
-
+from transducers.bmp280Transducer import Bmp280Transducer
+from transducers.neo6mGps import Neo6mGps
 class Main():
 
     def __init__(self):
@@ -39,13 +38,13 @@ class Main():
         # import the instances into the other modules,
         # ensuring only one common instance of each module is used
         
-        # Start the sensors
-        temp_sensor = Temperature()
-        pressure_sensor = Pressure()
+        # Start the transducers
         self.sensor_register = SensorRegister()
-        self.sensor_register.add_sensor(temp_sensor)
-        self.sensor_register.add_sensor(pressure_sensor)
-        self.sensor_register.run_sensors()
+        bmp280 = Bmp280Transducer()
+        gps = Neo6mGps()
+        self.sensor_register.add_transducer(bmp280)
+        self.sensor_register.add_transducer(gps)
+        self.sensor_register.run_transducers()
 
     def main(self):
         # Ensure the controller stops when the application exits

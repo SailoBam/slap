@@ -28,10 +28,11 @@
     <div class="container">
         <h1 style="text-align: right;">Sensor Readings</h1>
         <div class="sensors-grid">
-            {% for sensor in sensors %}
+            {% for reading in sensorReadings %}
             <div class="sensor-box">
-                <div class="sensor-name">{{ sensor }}</div>
-                <div id="{{ sensor }}" class="sensor-value">_</div>
+                <div class="sensor-name">{{ reading.name }}</div>
+                <div id="{{ reading.name }}" class="sensor-value">_</div>
+                <div class="sensor-units">{{ reading.units }}</div>
             </div>
             {% endfor %}
         </div>

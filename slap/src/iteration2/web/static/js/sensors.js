@@ -8,9 +8,9 @@ async function sensorReadings(){
 
 async function updateAll(){
     readings = await sensorReadings();
-    for (const [sensorName, value] of Object.entries(readings)) {
-        console.log(sensorName, value)
-        document.getElementById(sensorName).textContent = value;
+    for (const reading of readings) {
+        console.log(reading)
+        document.getElementById(reading.name).textContent = reading.value;
     }
 }
 // Update readings

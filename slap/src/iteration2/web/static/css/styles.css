@@ -128,6 +128,27 @@ body {
     padding: 6px;
 }
 
+.sensor-units {
+    text-align: right;
+    font-size: 0.8em;
+    color: #666;
+}
+
+.sensor-value {
+    text-align: left;
+    font-size: 1.2em;
+    color: #008CBA;
+    margin-right: 15px;
+}
+
+.sensor-name {
+    text-align: right;
+    font-size: 0.8em;
+    color: #666;
+}
+
+
+
 /* Compass container */
 .compass-container {
     display: flex;

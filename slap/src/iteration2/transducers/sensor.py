@@ -1,32 +1,35 @@
 from abc import ABC, abstractmethod
-
+import threading
 class Sensor(ABC):
-    def __init__(self):
-        self.name = ""
-
-    def get_name(self):
+    def __init__(self, name: str, units: str):
+        self.name = name
+        self.units = units
+        self.value = None
+        
+    def getName(self):
         return self.name
 
-    def set_name(self, name: str):
-        self.name = name
+    def getUnits(self):
+        return self.units
 
-    @abstractmethod
     def getData(self):
-        pass
+        return self.value
 
-    @abstractmethod
+    def setData(self, value):
+        self.value = value
+
     def start(self):
         """Start the sensor thread"""
         self.running = True
+        self.thread = threading.Thread(target=self.run)
+        self.thread.daemon = True
+        self.thread.start()
 
-    @abstractmethod
+
     def stop(self):
         """Stop the sensor thread"""
         self.running = False
+        if self.thread:
+            self.thread.join()
 
-    @abstractmethod
-    def run(self):
-        """Main thread loop - must be implemented by child classes"""
-
-        pass
     
