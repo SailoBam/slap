@@ -11,6 +11,7 @@ class Gps:
         self.encoder = Encoder()
 
     def update(self, heading, longitude, latitude, time):
+        print("heading in gps.py is: ", heading)
         self.auto_pilot.update(heading, time)
         self.longitude = longitude
         self.latitude = latitude

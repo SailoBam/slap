@@ -1,11 +1,15 @@
 from abc import ABC, abstractmethod
 import threading
 class Sensor(ABC):
-    def __init__(self, name: str, units: str):
+    def __init__(self, transducer, name: str, units: str):
         self.name = name
         self.units = units
         self.value = None
-        
+        self.transducer = transducer
+
+    def getTransducer(self):
+        return self.transducer        
+
     def getName(self):
         return self.name
 

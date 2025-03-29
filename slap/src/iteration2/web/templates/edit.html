@@ -36,17 +36,17 @@
                 
                 <div class="form-group">
                     <label for="proportional">Proportional:</label>
-                    <input type="number" id="proportional" name="proportional" value="{{ config.proportional }}" required>
+                    <input type="number" id="proportional" name="proportional" value="{{ config.proportional }}" step=".01" required>
                 </div>
                 
                 <div class="form-group">
                     <label for="integral">Integral:</label>
-                    <input type="number" id="integral" name="integral" value="{{ config.integral }}" required>
+                    <input type="number" id="integral" name="integral" value="{{ config.integral }}" step=".01" required>
                 </div>
 
                 <div class="form-group">
                     <label for="differential">Differential:</label>
-                    <input type="number" id="differential" name="differential" value="{{ config.differential }}" required>
+                    <input type="number" id="differential" name="differential" value="{{ config.differential }} "step=".01" required>
                 </div>
                 
                 <div class="button-container">

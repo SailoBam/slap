@@ -1,5 +1,6 @@
 from transducers.transducer import Transducer
 from transducers.sensor import Sensor
+import math
 try:
     import serial
     import time
@@ -13,30 +14,36 @@ except Exception as e:
 class Neo6mGps(Transducer):
     def __init__(self):
         super().__init__()  # This calls the parent class's __init__
-        self.heading = Sensor("Heading", "°")
-        self.position = Sensor("Position", "lon, lat")
+        self.heading = Sensor(self, "Heading", "°")
+        self.position = Sensor(self, "Position", "lon, lat")
         self.sensors = [self.heading, self.position]
         self.running = False
+        self.lng = 50
+        self.lat = -3
         if IS_RPI:
             self.port = "/dev/ttyAMA0"
             self.ser = serial.Serial(self.port, baudrate=9600, timeout=0.5)
 
-
+    def getLongitude(self):
+        return self.lng 
+    
+    def getLatitude(self):
+        return self.lat
+    
     def run(self):
         print(IS_RPI)
         while self.running:
             try:
                 if IS_RPI:
-                    print("Running NEO6M")
+                    #print("Running NEO6M")
                     newdata = self.ser.readline()
                     newdata = newdata.decode('utf-8')
-                    print(newdata)
+
                     if "GLL" in newdata:
                         newmsg=pynmea2.parse(newdata)
-                        lat=newmsg.latitude
-                        lng=newmsg.longitude
-                        pos = f"{lng},{lat}"
-                        print(pos)
+                        self.lat=newmsg.latitude
+                        self.lng=newmsg.longitude
+                        pos = f"{self.lng},{self.lat}"
                         self.position.setData(pos)
                         
                     if "HCHDG" in newdata:
