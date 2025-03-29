@@ -1,5 +1,6 @@
 from transducers.transducer import Transducer
 from transducers.sensor import Sensor
+import math
 try:
     from matplotlib.cbook import ls_mapper
     import serial
@@ -28,7 +29,7 @@ class Neo6mGps(Transducer):
                 if IS_RPI:
                     newdata = self.ser.readline()
                     newdata = newdata.decode('utf-8')
-                    if "GPRMC" in newdata:
+                    if "GLL" in newdata:
                         newmsg=pynmea2.parse(newdata)
                         lat=newmsg.latitude
                         lng=newmsg.longitude

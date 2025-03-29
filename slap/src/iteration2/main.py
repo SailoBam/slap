@@ -17,6 +17,7 @@ import atexit
 from transducers.sensorRegister import SensorRegister
 from transducers.bmp280Transducer import Bmp280Transducer
 from transducers.neo6mGps import Neo6mGps
+from transducers.icm20948Magnetometer import ICM20948Magnetometer
 class Main():
 
     def __init__(self):
@@ -42,8 +43,10 @@ class Main():
         self.sensor_register = SensorRegister()
         bmp280 = Bmp280Transducer()
         gps = Neo6mGps()
+        magnetometer = ICM20948Magnetometer()
         self.sensor_register.add_transducer(bmp280)
         self.sensor_register.add_transducer(gps)
+        self.sensor_register.add_transducer(magnetometer)
         self.sensor_register.run_transducers()
 
     def main(self):
