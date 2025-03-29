@@ -22,7 +22,12 @@ class Neo6mGps(Transducer):
             self.port = "/dev/ttyAMA0"
             self.ser = serial.Serial(self.port, baudrate=9600, timeout=0.5)
 
-
+    def getLongitude(self):
+        return self.lng 
+    
+    def getLatitude(self):
+        return self.lat
+    
     def run(self):
         while self.running:
             try:
@@ -31,10 +36,9 @@ class Neo6mGps(Transducer):
                     newdata = newdata.decode('utf-8')
                     if "GLL" in newdata:
                         newmsg=pynmea2.parse(newdata)
-                        lat=newmsg.latitude
-                        lng=newmsg.longitude
-                        pos = f"{lng},{lat}"
-                        print(pos)
+                        self.lat=newmsg.latitude
+                        self.lng=newmsg.longitude
+                        pos = f"{self.lng},{self.lat}"
                         self.position.setData(pos)
                         
                     if "HCHDG" in newdata:

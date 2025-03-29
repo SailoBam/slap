@@ -30,6 +30,11 @@ class SensorRegister:
                 sensors.append(output)
         return sensors
     
-    
+    def getSensor(self, name):
+        for transducer in self.transducers:
+            for sensor in transducer.getSensors():
+                if sensor.getName() == name:
+                    return sensor
+        raise Exception("No sensor found with name: " + name)
 
 
