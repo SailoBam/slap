@@ -164,7 +164,7 @@ class WebServer:
         @app.route('/api/sensorReadings')
         def sensorReadings():
             readings = self.sensor_register.getSensorReadings()
-            print(readings)
+            #print(readings)
             return jsonify(readings), 200
 
         @app.route('/sensorsReadings')

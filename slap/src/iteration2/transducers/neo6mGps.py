@@ -1,13 +1,13 @@
 from transducers.transducer import Transducer
 from transducers.sensor import Sensor
 try:
-    from matplotlib.cbook import ls_mapper
     import serial
     import time
     import string
     import pynmea2
     IS_RPI = True
-except:
+except Exception as e:
+    print(e)
     IS_RPI = False  
 
 class Neo6mGps(Transducer):
@@ -23,12 +23,15 @@ class Neo6mGps(Transducer):
 
 
     def run(self):
+        print(IS_RPI)
         while self.running:
             try:
                 if IS_RPI:
+                    print("Running NEO6M")
                     newdata = self.ser.readline()
                     newdata = newdata.decode('utf-8')
-                    if "GPRMC" in newdata:
+                    print(newdata)
+                    if "GLL" in newdata:
                         newmsg=pynmea2.parse(newdata)
                         lat=newmsg.latitude
                         lng=newmsg.longitude
