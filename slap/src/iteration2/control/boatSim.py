@@ -8,8 +8,6 @@ import time
 import math
 import random
 
-
-
 # Used for the decay equation
 TIMECONSTANT = 0.333333
 MAX_DISTURBANCE_DURATION = 5000 # ms
@@ -17,48 +15,48 @@ MIN_DISTURBANCE_DURATION = 2000 # ms
 MAX_DISTURBANCE_MAGNITUDE = 20 # degrees per second
 class BoatSim:
 
-    def __init__(self, sensor_register: SensorRegister):
+    def __init__(self, sensor_register: SensorRegister, gps):
         # Imports the heading variable
+        self.gps = gps
         self.heading = 0.0
         self.running = False
-        self.speed_over_ground = 5 #knots
+        self.speed_over_ground = 50 #knots
         self.pos = Point(50.604531, -3.408637)
         self.sensor_register = sensor_register
         self.simThread = Thread(target=self.simulatedLoop, daemon=True)
         self.readSensorThread = Thread(target=self.readSensorLoop, daemon=True)
-        # start simulation, at ~ exmouth safe water mark
-
         
-
-    def setGps(self, gps):
-        self.gps = gps
 
     def startSim(self):
         # Starts the control system on a new thread
+        #print("Starting Sim")
         self.running = True
         if self.readSensorThread.is_alive():
-              self.readSensorThread.join()
-        self.readSensorThread.join()
+            self.readSensorThread.join()
+        self.simThread = Thread(target=self.simulatedLoop, daemon=True)    
         self.simThread.start()
         self.rudderAngle = 0
         
     def stopSim(self):
         # Stops the system
-        print("stopSim has been run")
+        #print("stopSim has been run")
         self.running = False
         if self.simThread.is_alive():
-              self.simThread.join()
+            self.simThread.join()
+        # Create a new thread instance for reading sensors
+        self.readSensorThread = Thread(target=self.readSensorLoop, daemon=True)
         self.readSensorThread.start()
         self.rudderAngle = 0
 
     def simulatedLoop(self):
-	
+        #print("Starting Sim Loop")
         while self.running:   
+            #print("In Sim Loop")
             self.currentTimeMilli = int(round(time.time() * 1000))
             self.nextDisturbance = self.createDisturbance()
-            print("nextDisturbance", self.nextDisturbance)
+            #print("nextDisturbance", self.nextDisturbance)
             self.previousTime = 0
-            while self.running == True:
+            while self.running:
 
                 
                 
@@ -75,27 +73,24 @@ class BoatSim:
                 newPos = self.getNewPosition(self.pos, self.speed_over_ground, self.heading, dt)
                 disturbance = self.disturbance()
                 
-                print("disturbance", disturbance)
+                #print("disturbance", disturbance)
 
                 yawRate = (1 / TIMECONSTANT) * self.rudderAngle + disturbance
-                if yawRate > 0 or yawRate < 0:
-                    print("yawRate", yawRate)
                 # ψ(t) = ψ(0) + δ * [t/T + (exp(-t/T) - 1)]
             
                 newHead = (self.heading + yawRate * (dt / TIMECONSTANT + (math.exp(-dt / TIMECONSTANT) - 1))) % 360
-                print("newHead", newHead)
+                #print("newHead", newHead)
                 
                 self.gps.update(newHead, str(newPos.longitude), str(newPos.latitude), self.currentTimeMilli)
                 self.heading = newHead
                 self.pos = newPos
                 self.previousTime = self.currentTimeMilli
-
     
     def readSensorLoop(self):
-        print("Trying to start real loop")
+        #print("Trying to start real loop")
         while not self.running:
             self.currentTimeMilli = int(round(time.time() * 1000))
-            print("In Real Loop")
+            #print("In Real Loop")
             heading = self.sensor_register.getSensor("MagHeading").getData()
             position = self.sensor_register.getSensor("Position")
             posModule = position.getTransducer()

@@ -14,7 +14,7 @@ except Exception as e:
 class ICM20948Magnetometer(Transducer):
     def __init__(self):
         super().__init__()
-        self.heading = Sensor(self, "MagHeading", "°")
+        self.heading = Sensor(self, "magheading", "MagHeading", "°")
         self.sensors = [self.heading]
         self.running = False
         

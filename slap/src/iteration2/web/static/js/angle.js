@@ -130,6 +130,15 @@ function setButtonStatus(sysStatus){
         buttonStart.disabled = false;
         buttonStop.disabled = true;
     }
+    buttonSim = document.getElementById('simulateButton')
+    if (sysStatus.simRunning) {
+        buttonSim.textContent = "STOP SIMULATION"
+        buttonSim.style.backgroundColor = "red"
+    }
+    else{
+        buttonSim.textContent = "START SIMULATION"
+        buttonSim.style.backgroundColor = "green"
+    }
 }
 
 async function toggleLogging(){

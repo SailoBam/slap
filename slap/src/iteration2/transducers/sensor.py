@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
 import threading
 class Sensor(ABC):
-    def __init__(self, transducer, name: str, units: str):
+    def __init__(self, transducer, identifier: str, name: str, units: str):
+        self.identifier = identifier
         self.name = name
         self.units = units
         self.value = None
@@ -21,6 +22,9 @@ class Sensor(ABC):
 
     def setData(self, value):
         self.value = value
+        
+    def getIdentifier(self):
+        return self.identifier
 
     def start(self):
         """Start the sensor thread"""

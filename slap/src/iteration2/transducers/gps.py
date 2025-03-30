@@ -1,4 +1,3 @@
-from control.boatSim import BoatSim
 from utils.nmea.nmeaEncoder import Encoder
 from control.autoPilot import AutoPilot
 class Gps:
@@ -11,13 +10,13 @@ class Gps:
         self.encoder = Encoder()
 
     def update(self, heading, longitude, latitude, time):
-        print("heading in gps.py is: ", heading)
+        #print("heading in gps.py is: ", heading)
         self.auto_pilot.update(heading, time)
         self.longitude = longitude
         self.latitude = latitude
         self.heading = heading
 
-    def setAutoPilot(self, auto_pilot):
+    def setAutoPilot(self, auto_pilot: AutoPilot):
         self.auto_pilot = auto_pilot
 
     def getPos(self):

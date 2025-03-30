@@ -36,13 +36,13 @@ class Main():
         self.tiller_actuator = TillerActuator()
         self.auto_pilot = AutoPilot()
         self.gps = Gps()
-        self.boat_sim = BoatSim(self.sensor_register)
+        self.boat_sim = BoatSim(self.sensor_register, self.gps)
         self.map_manager = MapManager()
-        self.logger = Logger(self.gps, self.map_manager)
+        self.logger = Logger(self.gps, self.map_manager, self.sensor_register)
         self.store = SlapStore("slap.db")
 
 
-        self.boat_sim.setGps(self.gps)
+        
         self.gps.setAutoPilot(self.auto_pilot)
         self.auto_pilot.setTillerActuator(self.tiller_actuator)
         self.tiller_actuator.setBoatSim(self.boat_sim)
@@ -53,9 +53,11 @@ class Main():
        
 
     def main(self):
-
+        
         self.boat_sim.stopSim()
-
+        
+        for sensor in self.sensor_register.getSensors():
+            self.store.addSensor(sensor)
         # Ensure the controller stops when the application exits
         atexit.register(self.boat_sim.stopSim)
 

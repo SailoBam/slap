@@ -14,8 +14,8 @@ except Exception as e:
 class Neo6mGps(Transducer):
     def __init__(self):
         super().__init__()  # This calls the parent class's __init__
-        self.heading = Sensor(self, "Heading", "°")
-        self.position = Sensor(self, "Position", "lon, lat")
+        self.heading = Sensor(self, "gpsHeading", "Heading", "°")
+        self.position = Sensor(self, "gpsPosition", "Position", "lon, lat")
         self.sensors = [self.heading, self.position]
         self.running = False
         self.lng = 50

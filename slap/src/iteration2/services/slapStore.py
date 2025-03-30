@@ -1,5 +1,6 @@
 import sqlite3
 import ast
+from transducers.sensor import Sensor
 
 # --- All Classes possible to put into the database ---
 class Config():
@@ -23,23 +24,6 @@ class Config():
             differential=float(row['differential'])
         )
 
-class Sensor():
-
-    def __init__(self, id: int, config: int, name: str, model: str):
-        # Contains and assigns the values for the Sensor type
-        self.sensorId = id
-        self.configId = config
-        self.sensorName = name
-        self.sensorModel = model
-        
-    @classmethod
-    def from_dict(cls, row):
-        return Sensor(
-            id=row['sensorId'],
-            config=row['configId'],
-            name=row['sensorName'],
-            model=row['sensorModel']
-        )
 class Trip():
     def __init__(self, tripId: int, configId: int, time_started: str, time_ended: str, distance_travelled: float):
         # Contains and assigns the values for the Trip type
@@ -62,8 +46,8 @@ class Trip():
 
 class Reading():
      # Contains and assigns the values for the Reading type
-    def __init__(self, tripId: int, sensorId: int, data: str, timestamp: str):
-        self.sensorId = sensorId
+    def __init__(self, tripId: int, identifier: str, data: str, timestamp: str):
+        self.identifier = identifier
         self.tripId = tripId
         self.data = data
         self.timeStamp = timestamp
@@ -72,7 +56,7 @@ class Reading():
     def from_dict(cls, row):
         return Reading(
             tripId=row['tripId'],
-            sensorId=row['sensorId'],
+            identifier=row['identifier'],
             data=row['data'],
             timestamp=row['timeStamp']
         )
@@ -102,12 +86,9 @@ class SlapStore():
         # Sensor table
         self.cursor.execute('''
             CREATE TABLE IF NOT EXISTS Sensor (
-                sensorId INTEGER PRIMARY KEY,
-                configId INTEGER NOT NULL,
+                identifier TEXT PRIMARY KEY,
                 sensorName TEXT NOT NULL,
-                sensorType TEXT NOT NULL,
-                dataType TEXT NOT NULL,
-                FOREIGN KEY (configId) REFERENCES CONFIGS(configId) ON DELETE CASCADE
+                units TEXT NOT NULL
             )
         ''')
 
@@ -126,11 +107,11 @@ class SlapStore():
         # Readings table
         self.cursor.execute('''
             CREATE TABLE IF NOT EXISTS Readings (
-                sensorId INTEGER NOT NULL,
+                identifier TEXT NOT NULL,
                 tripId INTEGER NOT NULL,
                 data TEXT NOT NULL,
                 timeStamp TIME NOT NULL,
-                FOREIGN KEY (sensorId) REFERENCES Sensor(sensorId) ON DELETE CASCADE,
+                FOREIGN KEY (identifier) REFERENCES Sensor(identifier) ON DELETE CASCADE,
                 FOREIGN KEY (tripId) REFERENCES Trip(tripId) ON DELETE CASCADE
             )
         ''')
@@ -203,12 +184,17 @@ class SlapStore():
     
     def addSensor(self, sensor: Sensor): 
         # Inserts a Sensor into the database
-        self.cursor.execute(f"INSERT INTO Sensor (sensorId, configId, sensorName, sensorType, dataType) VALUES ('{sensor.sensorId}', '{sensor.configId}', '{sensor.sensorName}', '{sensor.sensorModel}', 'N/A')")
-        self.connection.commit()
+        # Check if sensor already exists
+        self.cursor.execute(f"SELECT * FROM Sensor WHERE identifier == '{sensor.identifier}'")
+        existing_sensor = self.cursor.fetchone()
+        if existing_sensor is None:
+            # Only insert if sensor doesn't exist
+            self.cursor.execute(f"INSERT INTO Sensor (identifier, sensorName, units) VALUES ('{sensor.identifier}', '{sensor.name}', '{sensor.units}')")
+            self.connection.commit()
 
-    def getSensor(self, sensor_name: str):
+    def getSensor(self, identifier: str):
         # Returns all information on a sensor using its name
-        self.cursor.execute(f"SELECT * FROM Sensor WHERE sensorName == '{sensor_name}'")
+        self.cursor.execute(f"SELECT * FROM Sensor WHERE identifier == '{identifier}'")
         row = self.cursor.fetchone()
         return row
 
@@ -237,8 +223,29 @@ class SlapStore():
 
     def writeLog(self, reading: Reading):
         # Inserts a Reading into the database    
-        self.cursor.execute(f"INSERT INTO Readings (tripId, sensorId, data, timeStamp) VALUES ('{reading.tripId}', '{reading.sensorId}', '{reading.data}', '{reading.timeStamp}')")
+        self.cursor.execute(f"INSERT INTO Readings (tripId, identifier, data, timeStamp) VALUES ('{reading.tripId}', '{reading.identifier}', '{reading.data}', '{reading.timeStamp}')")
         self.connection.commit()
+        return True
+
+
+    def getPosLogs(self, trip: Trip):
+        """
+        Get all positional logs from the trip
+        :param trip
+        :return: List of positional lists stored as floats
+        """
+        data = []
+        # Get all readings from database
+        self.cursor.execute(f"SELECT data FROM Readings WHERE identifier == 'Position' AND tripId == '{trip.tripId}'")
+        rows = self.cursor.fetchall()
+        for row in rows:
+            # Splits lon/lat string into list of strings
+            pos_list = row[0].split(",")
+            # Convert string list to float list
+            num_list = list(map(float, pos_list))
+            # Add positional list into waypoints list
+            data.append(num_list)
+        return data
 
     def getLog(self, trip: Trip):
         """
@@ -291,3 +298,4 @@ class SlapStore():
                 'distanceTravelled': row['distanceTravelled']
             })
         return trips
+    

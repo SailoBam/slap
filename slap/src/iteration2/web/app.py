@@ -101,7 +101,7 @@ class WebServer:
                 #print("Received data:", change)
 
                 # Update desired heading, returns the new actual heading
-                headings = self.auto_pilot.getHeadings()
+                headings = self.auto_pilot.getPilotValues()
 
                 heading = headings['target']
                 heading = heading + int(change)
@@ -123,9 +123,10 @@ class WebServer:
         @app.route('/api/toggleLogging')
         def toggleLogging():
             try:
+                print("toggleLogging")
                 self.current_trip = None
 
-                if self.logger.isRunning():
+                if self.logger.running:
                     self.logger.stop()
                 else:
                     config = self.store.getCurrentConfig() 
@@ -133,7 +134,7 @@ class WebServer:
                     self.logger.start(config)
                     self.current_trip = config
                 status = {
-                'status': self.logger.isRunning(),
+                'status': self.logger.running,
                 'tripName': "LogName"
                 }
 
@@ -147,17 +148,20 @@ class WebServer:
         def systemStatus():
             if self.current_trip is None:
                 name = "No Trip"
-                running = self.logger.isRunning()
+                running = self.logger.running
                 pilotRunning = self.auto_pilot.running
+                simRunning = self.boat_sim.running
             else:
                 name = self.current_trip.name
-                running = self.logger.isRunning()
+                running = self.logger.running
                 pilotRunning = self.auto_pilot.running
+                simRunning = self.boat_sim.running
             
             status = {
                 'status': running,
                 'tripName': name,
-                'pilotRunning': pilotRunning
+                'pilotRunning': pilotRunning,
+                'simRunning': simRunning
             }
             return jsonify(status), 200
         
@@ -188,10 +192,10 @@ class WebServer:
         def toggleSimulation():
             try:
                 if self.boat_sim.running:
-                    self.boat_sim.stop()
+                    self.boat_sim.stopSim()
                     message = "Simulation stopped"
                 else:
-                    self.boat_sim.start()
+                    self.boat_sim.startSim()
                     message = "Simulation started"
                 return jsonify({"message": message}), 200
             except Exception as e:
@@ -271,7 +275,7 @@ class WebServer:
         @app.route('/api/uploadTrip/<int:tripId>', methods=['GET'])
         def uploadTrip(tripId):
             trip = self.store.getTrip(tripId)
-            readings = self.store.getLog(trip)
+            readings = self.store.getPosLogs(trip)
             self.logger.map_manager.uploadToMapbox(f"Slap Trip ID: {trip.tripId}", readings)
             
             return jsonify({'message': 'Trip uploaded'})

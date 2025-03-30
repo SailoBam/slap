@@ -26,7 +26,7 @@ Long distance sailing is restricted by the necessity to course correct during tr
 
 # Description of Current System
 
-Currently, a mechanical system is used to correct the boat’s course, a wind vein is used to measure the difference in desired and actual path. However, this does not consider many vital variables of which can heavily affect the travel outcome. A computerised solution would be able to consider these effectors and be able to adjust accordingly. A computer would also be able to adjust its effect on a boats course based on a log of previous trips and how close the destination was relative to the desired outcome.
+Currently, a mechanical system is used to correct the boat's course, a wind vein is used to measure the difference in desired and actual path. However, this does not consider many vital variables of which can heavily affect the travel outcome. A computerised solution would be able to consider these effectors and be able to adjust accordingly. A computer would also be able to adjust its effect on a boats course based on a log of previous trips and how close the destination was relative to the desired outcome.
 
 # Identification of users
 
@@ -38,7 +38,7 @@ The user needs to be able to effectively use the software whilst under the somet
 
 # Data Sources and Outputs
 
-Incoming data would be from various sensors around the boat to read information about the environment and boat’s condition. This would include optional data such as wind direction and strength and potentially magnetic compass (magnetometer), movements (accelerometer). Information about the users desired heading will be inputted into the system. The system needs to be easy to activate and deactivate incase of emergencies
+Incoming data would be from various sensors around the boat to read information about the environment and boat's condition. This would include optional data such as wind direction and strength and potentially magnetic compass (magnetometer), movements (accelerometer). Information about the users desired heading will be inputted into the system. The system needs to be easy to activate and deactivate in case of emergencies
 
 The primary output will drive the actuator which changes the boat's direction.
 

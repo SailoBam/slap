@@ -15,8 +15,8 @@ from transducers.sensor import Sensor
 class Bmp280Transducer(Transducer):
     def __init__(self):
         super().__init__()  # This calls the parent class's __init__
-        self.temperature = Sensor(self, "Temperature", "°C")
-        self.pressure = Sensor(self, "Pressure", "hPa")
+        self.temperature = Sensor(self, "temperature", "Temperature", "°C")
+        self.pressure = Sensor(self, "pressure", "Pressure", "hPa")
         self.sensors = [self.temperature, self.pressure]
         self.running = False
         if IS_RPI:

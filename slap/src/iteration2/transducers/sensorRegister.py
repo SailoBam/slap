@@ -23,6 +23,7 @@ class SensorRegister:
         for transducer in self.transducers:
             for sensor in transducer.getSensors():
                 output = {
+                    "identifier": sensor.getIdentifier(),
                     "name": sensor.getName(),
                     "value": sensor.getData(),
                     "units": sensor.getUnits()
@@ -37,4 +38,9 @@ class SensorRegister:
                     return sensor
         raise Exception("No sensor found with name: " + name)
 
-
+    def getSensors(self):
+        sensors = []
+        for transducer in self.transducers:
+            for sensor in transducer.getSensors():
+                sensors.append(sensor)
+        return sensors
