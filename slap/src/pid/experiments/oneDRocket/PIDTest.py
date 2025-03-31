@@ -139,7 +139,8 @@ class Sim():
 
 
 def Main():
-        sim = Sim()
-        sim.Tick()
+    sim = Sim()
+    sim.Tick()
 
 
+Main()

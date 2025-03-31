@@ -1,12 +1,11 @@
 import sys
-sys.path.append('../../')
 import os
 import time
-from pid.experiments.oneDRocket.rocketModel import Rocket as RocketSim
-from src.pid.experiments.pidModule import PidController
-from src.pid.experiments.plotter import Visual
-from src.pid.experiments.boatDynamics.simulator import BoatSim
-from src.pid.experiments.boatDynamics.simpleModel import iterate_Heading as iterate
+from rocketModel import Rocket as RocketSim
+from pidModule import PidController
+from plotter import Visual
+from simulator import BoatSim
+from simpleModel import iterate_Heading as iterate
 import math
 sim = BoatSim()
 visual = Visual()
