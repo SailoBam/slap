@@ -56,6 +56,7 @@ class PidController:
         return (self.kp * proportional + self.ki * intergal + self.kd * differential) / self.LIMIT_OF_CONTROL
     
     def reset(self):
+        # Resets the controller to its default values
         self.accumlatedError = 0
         self.elapsed = 0
         self.lastPos = None

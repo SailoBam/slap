@@ -4,6 +4,7 @@ from transducers.sensor import Sensor
 
 # --- All Classes possible to put into the database ---
 class Config():
+    # Class to store PID configuration settings
 
     def __init__(self, id: int,  name: str, proportional: float, integral: float, differential: float):
         # Contains and assigns the values for the Boat type
@@ -25,6 +26,7 @@ class Config():
         )
 
 class Trip():
+    # Class to store trip information
     def __init__(self, tripId: int, configId: int, time_started: str, time_ended: str, distance_travelled: float):
         # Contains and assigns the values for the Trip type
         self.tripId = tripId
@@ -35,6 +37,7 @@ class Trip():
 
     @classmethod
     def from_dict(cls, row):
+        # Creates Trip object from database row
         return Trip(
             tripId=row['tripId'],
             configId=row['configId'],
@@ -43,9 +46,8 @@ class Trip():
             distance_travelled=row['distanceTravelled']
         )
 
-
 class Reading():
-     # Contains and assigns the values for the Reading type
+    # Class to store sensor readings
     def __init__(self, tripId: int, identifier: str, data: str, timestamp: str):
         self.identifier = identifier
         self.tripId = tripId
@@ -54,6 +56,7 @@ class Reading():
 
     @classmethod
     def from_dict(cls, row):
+        # Creates Reading object from database row
         return Reading(
             tripId=row['tripId'],
             identifier=row['identifier'],
@@ -61,9 +64,8 @@ class Reading():
             timestamp=row['timeStamp']
         )
 
-        
 class SlapStore():
-       
+    # Main database management class
     def __init__(self, db_name: str):
         # Set up database and creates all necessary tables
         # Use in-memory database if db_name is ":memory:"
@@ -118,19 +120,16 @@ class SlapStore():
 
         self.connection.commit()
 
-#        ---All service functions for the database---
-
     def newConfig(self, config: Config): 
-        # Inserts a config into the database and returns the auto-incremented ID
+        # Creates a new configuration in the database
         self.cursor.execute(f"INSERT INTO CONFIGS (name, proportional, integral, differential) VALUES ('{config.name}','{config.proportional}','{config.integral}','{config.differential}')")
         self.connection.commit()
         config.configId = self.cursor.lastrowid
         return config
     
     def getGains(self,id: int):
-        # Returns all PID gains stored in the Boat instance
+        # Retrieves PID gains for a specific configuration
         gains = {}
-        # Retrieves all data and stores it as a dictionary
         self.cursor.execute(f"SELECT proportional, integral, differential FROM CONFIGS WHERE configId = '{id}'")
         columns = [desc[0] for desc in self.cursor.description]
         for row in self.cursor.fetchall():
@@ -139,35 +138,34 @@ class SlapStore():
         return gains
 
     def listConfigs(self):
+        # Lists all configurations in the database
         self.cursor.execute(f"SELECT * FROM CONFIGS")
         rows = self.cursor.fetchall()
         return [dict(row) for row in rows]
     
     def setDefault(self, configId: int):
-        # Clear any rows which are set as default
+        # Sets a configuration as the default one
         self.cursor.execute(f"UPDATE CONFIGS SET isDefault = False WHERE isdefault = True")
-
-        # Set selected row as default
         self.cursor.execute(f"UPDATE CONFIGS SET isDefault = True WHERE configId = '{configId}'")
         self.connection.commit()
 
     def updateConfig(self, config: Config):
-        #print(f"UPDATE CONFIGS SET name = '{config['name']}', proportional = '{config['proportional']}', integral = '{config['integral']}', differential = '{config['differential']}' WHERE configId = '{config['configId']}'")
+        # Updates an existing configuration
         self.cursor.execute(f"UPDATE CONFIGS SET name = '{config.name}', proportional = '{config.proportional}', integral = '{config.integral}', differential = '{config.differential}' WHERE configId = '{config.configId}'")
         self.connection.commit()
 
     def deleteConfig(self, configId: int):
+        # Deletes a configuration from the database
         self.cursor.execute(f"DELETE FROM CONFIGS WHERE configId = '{configId}'")
         self.connection.commit()
 
     def getCurrentConfig(self):
-        # Returns all information on a config using its name as the identifier
+        # Gets the currently set default configuration
         try:
             self.cursor.execute(f"SELECT * FROM CONFIGS WHERE isDefault == True")
             row = self.cursor.fetchone()
             if row is not None:
                 config = Config.from_dict(row)
-                #Config(row['configId'], row['name'], row['proportional'], row['integral'], row['differential'])
             else:
                 config = Config(0, 'Default', 0, 0, 0)
                 self.newConfig(config)
@@ -177,44 +175,43 @@ class SlapStore():
            print(f"Error: {e}")
 
     def getConfig(self, configId: int):
+        # Gets a specific configuration by ID
         self.cursor.execute(f"SELECT * FROM CONFIGS WHERE configId == '{configId}'") 
         row = self.cursor.fetchone()
         config = Config.from_dict(row)
         return config
     
     def addSensor(self, sensor: Sensor): 
-        # Inserts a Sensor into the database
-        # Check if sensor already exists
+        # Adds a new sensor to the database if it doesn't exist
         self.cursor.execute(f"SELECT * FROM Sensor WHERE identifier == '{sensor.identifier}'")
         existing_sensor = self.cursor.fetchone()
         if existing_sensor is None:
-            # Only insert if sensor doesn't exist
             self.cursor.execute(f"INSERT INTO Sensor (identifier, sensorName, units) VALUES ('{sensor.identifier}', '{sensor.name}', '{sensor.units}')")
             self.connection.commit()
 
     def getSensor(self, identifier: str):
-        # Returns all information on a sensor using its name
+        # Gets sensor information by identifier
         self.cursor.execute(f"SELECT * FROM Sensor WHERE identifier == '{identifier}'")
         row = self.cursor.fetchone()
         return row
 
     def createTrip(self, trip: Trip):
-        # Inserts a Trip into the database  
+        # Creates a new trip in the database
         self.cursor.execute(f"INSERT INTO Trip (configId, timeStarted, timeEnded, distanceTravelled) VALUES ('{trip.configId}', '{trip.timeStarted}', '{trip.timeEnded}', '{trip.distanceTravelled}')")
         trip.tripId = self.cursor.lastrowid
         self.connection.commit()
         return trip
 
     def getTrip(self, tripId: int):
-        # returns all information on a trip using the tripId and BoatId as the identifier
+        # Gets trip information by ID
         self.cursor.execute(f"SELECT * FROM Trip WHERE tripId == '{tripId}'")
         row = self.cursor.fetchone()
         trip = Trip.from_dict(row)
         return trip
     
     def endTrip(self, trip: Trip):
+        # Updates trip end time
         try:
-            #print(f"UPDATE Trip SET timeEnded = ? WHERE tripId = ?", (trip.timeEnded, trip.tripId))
             self.cursor.execute(f"UPDATE Trip SET timeEnded = ? WHERE tripId = ?", (trip.timeEnded, trip.tripId))
             self.connection.commit()
         except Exception as e:
@@ -222,20 +219,14 @@ class SlapStore():
             self.connection.rollback()
 
     def writeLog(self, reading: Reading):
-        # Inserts a Reading into the database    
+        # Writes a new sensor reading to the database
         self.cursor.execute(f"INSERT INTO Readings (tripId, identifier, data, timeStamp) VALUES ('{reading.tripId}', '{reading.identifier}', '{reading.data}', '{reading.timeStamp}')")
         self.connection.commit()
         return True
 
-
     def getPosLogs(self, trip: Trip):
-        """
-        Get all positional logs from the trip
-        :param trip
-        :return: List of positional lists stored as floats
-        """
+        # Gets all position logs for a specific trip
         data = []
-        # Get all readings from database
         self.cursor.execute(f"SELECT data FROM Readings WHERE identifier == 'Position' AND tripId == '{trip.tripId}'")
         rows = self.cursor.fetchall()
         for row in rows:
@@ -248,12 +239,6 @@ class SlapStore():
         return data
 
     def getLog(self, trip: Trip):
-        """
-        Get all readings from the trip
-        :param trip
-        :return: List of positional lists stored as floats
-        """
-
         data = []
         # Get all readings from database
         self.cursor.execute(f"SELECT data FROM Readings WHERE tripId == '{trip.tripId}'")

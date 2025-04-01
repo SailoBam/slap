@@ -79,7 +79,8 @@ class AutoPilot():
             self.tiller_angle = 0
     
 
-
+    # This function is used to calculate the error between the target and actual heading
+    # It takes into account the wrap around at 360 degrees
     def getHeadingError(self, target, heading):
         if target - heading <= 180:
             error = target - heading

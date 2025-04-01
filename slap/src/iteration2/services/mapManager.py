@@ -6,11 +6,11 @@ import os
 class MapManager:
 
 
-    def getGeoJson(self, waypoints, metadata: dict):
+    def getGeoJson(self, waypoints):
         
         geojson = {
             "type": "Feature",
-            "properties": metadata,
+            "properties": {},
             "geometry": {
                 "type": "LineString",
                 "coordinates": waypoints
@@ -19,14 +19,14 @@ class MapManager:
 
         return geojson
 
-    def uploadToMapbox(self, dataset_name, readings, metadata: dict):
+    def uploadToMapbox(self, dataset_name, readings):
         # Load credentials from .env file
         load_dotenv()
         access_token = os.getenv('MAPBOX_ACCESS_TOKEN')
         username = os.getenv('MAPBOX_USERNAME')
 
         # Get the GeoJSON
-        geojson_data = self.getGeoJson(readings, metadata)
+        geojson_data = self.getGeoJson(readings)
         print(geojson_data)
 
         # Create a new dataset

@@ -18,7 +18,7 @@ class BoatSim:
     def __init__(self, sensor_register: SensorRegister, gps):
         # Imports the heading variable
         self.gps = gps
-        self.heading = 0.0
+        self.heading = 0.0 # Degrees
         self.running = False
         self.speed_over_ground = 50 #knots
         self.pos = Point(50.604531, -3.408637)
@@ -29,7 +29,6 @@ class BoatSim:
 
     def startSim(self):
         # Starts the control system on a new thread
-        #print("Starting Sim")
         self.running = True
         if self.readSensorThread.is_alive():
             self.readSensorThread.join()
@@ -39,27 +38,22 @@ class BoatSim:
         
     def stopSim(self):
         # Stops the system
-        #print("stopSim has been run")
         self.running = False
         if self.simThread.is_alive():
             self.simThread.join()
+
         # Create a new thread instance for reading sensors
         self.readSensorThread = Thread(target=self.readSensorLoop, daemon=True)
         self.readSensorThread.start()
         self.rudderAngle = 0
 
     def simulatedLoop(self):
-        #print("Starting Sim Loop")
-        while self.running:   
-            #print("In Sim Loop")
+        while self.running: 
+            # Gets current time and creates a disturbance
             self.currentTimeMilli = int(round(time.time() * 1000))
             self.nextDisturbance = self.createDisturbance()
-            #print("nextDisturbance", self.nextDisturbance)
             self.previousTime = 0
             while self.running:
-
-                
-                
 
                 # Preforms one iteration of the boats movements and ensures its a usable value
                 self.currentTimeMilli = int(round(time.time() * 1000))
@@ -73,24 +67,25 @@ class BoatSim:
                 newPos = self.getNewPosition(self.pos, self.speed_over_ground, self.heading, dt)
                 disturbance = self.disturbance()
                 
-                #print("disturbance", disturbance)
-
+                # Calculates new yaw rate based on rudder angle and disturbance
                 yawRate = (1 / TIMECONSTANT) * self.rudderAngle + disturbance
                 # ψ(t) = ψ(0) + δ * [t/T + (exp(-t/T) - 1)]
             
+                # Calculates new heading based on yaw rate and time since last update
                 newHead = (self.heading + yawRate * (dt / TIMECONSTANT + (math.exp(-dt / TIMECONSTANT) - 1))) % 360
-                #print("newHead", newHead)
                 
+                # Updates the GPS with the new heading and position
                 self.gps.update(newHead, str(newPos.longitude), str(newPos.latitude), self.currentTimeMilli)
                 self.heading = newHead
                 self.pos = newPos
                 self.previousTime = self.currentTimeMilli
     
+    
     def readSensorLoop(self):
-        #print("Trying to start real loop")
+        # This is our Run Mode Loop
+        # Starts reading the sensors and passing the data to the GPS
         while not self.running:
             self.currentTimeMilli = int(round(time.time() * 1000))
-            #print("In Real Loop")
             heading = self.sensor_register.getSensor("MagHeading").getData()
             position = self.sensor_register.getSensor("Position")
             posModule = position.getTransducer()
@@ -101,10 +96,10 @@ class BoatSim:
     def disturbance(self):
         currentTimeMilli = int(round(time.time() * 1000))
 
+        # Checks if disturbance is active and returns the disturbance value
+        # If not, creates a new disturbance
         if (currentTimeMilli < self.nextDisturbance['startTime']):
-            #print("nextDisturbance['startTime']", self.nextDisturbance['startTime'])
             print("time until disturbance",self.nextDisturbance['startTime'] - currentTimeMilli)
-            #print("Before")
             return 0
         elif currentTimeMilli > self.nextDisturbance['startTime'] and currentTimeMilli < self.nextDisturbance['endTime']:
             print("During")
@@ -121,6 +116,8 @@ class BoatSim:
         self.rudderAngle = angle
 
     def createDisturbance(self):
+        # Creates a disturbance with a random magnitude and duration
+        # The disturbance is a random value between -MAX_DISTURBANCE_MAGNITUDE and MAX_DISTURBANCE_MAGNITUDE
         currentTimeMilli = int(round(time.time() * 1000))
         disturbance =  random.randint(-MAX_DISTURBANCE_MAGNITUDE, MAX_DISTURBANCE_MAGNITUDE)
         startTime = currentTimeMilli + random.randint( MAX_DISTURBANCE_DURATION, 2 * MAX_DISTURBANCE_DURATION)
@@ -132,29 +129,8 @@ class BoatSim:
         return output
     
 
-
-
     def getNewPosition(self, start_position: Point, speed_kt, heading_deg, time_secs):
-        """
-        Calculate the new latitude and longitude after traveling at a given speed (in knots) and heading.
-
-        :param start_position: Where we start
-        :param speed_kt: Speed in knots (nautical miles per hour)
-        :param heading_deg: Compass heading in degrees (0 = North, 90 = East)
-        :param time_hours: Time in hours
-        :return: New (longitude, latitude) as a Point
-        """
-
+        # Calculate the distance travelled in km based on speed and time
         distance_km = (speed_kt * 1.852) * (time_secs / (60 * 60))  # Convert knots to km/h and compute distance
         #print(distance_km)
         return geodesic(kilometers=distance_km).destination(start_position, heading_deg)
-    
-
-
-
-    
-if __name__ == "__main__":
-    simulator = BoatSim()
-    while True:
-        simulator.update(1, 0.5)
-        print(simulator.getHeading())

@@ -15,17 +15,21 @@ from transducers.sensor import Sensor
 class Bmp280Transducer(Transducer):
     def __init__(self):
         super().__init__()  # This calls the parent class's __init__
+
+        # Create the Sensors provided by this hardware
         self.temperature = Sensor(self, "temperature", "Temperature", "°C")
         self.pressure = Sensor(self, "pressure", "Pressure", "hPa")
         self.sensors = [self.temperature, self.pressure]
         self.running = False
+        # Checks if code is running on a Raspberry Pi
+        # If so, initializes the BMP280 hardware
         if IS_RPI:
             self.bus = SMBus(1)
             self.bmp280 = BMP280(i2c_dev=self.bus)
 
 
     def run(self):
-        """Main thread loop that continuously reads pressure"""
+        # Main thread loop that continuously reads pressure
         while self.running:
             try:
                 if IS_RPI:

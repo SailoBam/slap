@@ -58,8 +58,10 @@ function setValue(c) {
         });
     }
 
+// The updatePointer functions below first find the SVG element with the id of the pointer (e.g actual, target, tiller)
+// Then it updates the SVG elements using the rotate function
 
-
+// Update the compass pointer for the current heading
 function updateHeading(a){
     console.log("update Heading: ", a)
     line = document.getElementById("actual")
@@ -67,6 +69,7 @@ function updateHeading(a){
 
 }
 
+// Update the compass pointer for the target heading
 function updateTarget(a){
     console.log("update Target: ", a)
     line = document.getElementById("target")
@@ -74,6 +77,7 @@ function updateTarget(a){
 
 }
 
+// Update the compass pointer for the tiller angle
 function updateTiller(a){
     console.log("update Target: ", a)
     line = document.getElementById("tiller")
@@ -91,6 +95,7 @@ async function updateCompass() {
     
 }
 
+// Update the system status
 async function systemStatus(){
     response = await fetch('/api/systemStatus');
     console.log(response)
@@ -101,7 +106,7 @@ async function systemStatus(){
     setButtonStatus(sysStatus)
 }
 
-
+// Update the sensor readings
 async function sensorReadings(){
     response = await fetch('/api/sensorReadings');
     console.log(response)
@@ -109,7 +114,7 @@ async function sensorReadings(){
     console.log(sensorReadings)
 }
 
-
+// Update the button status
 function setButtonStatus(sysStatus){
     button = document.getElementById('loggingButton')
     if (sysStatus.status) {
@@ -141,6 +146,7 @@ function setButtonStatus(sysStatus){
     }
 }
 
+// Toggle logging
 async function toggleLogging(){
     response = await fetch('/api/toggleLogging');
     
@@ -150,11 +156,13 @@ async function toggleLogging(){
     setButtonStatus(logging_status)
 }
 
+// Start the pilot
 async function startPilot(){
     response = await fetch('/api/startPilot');
     console.log(response)
 }
 
+// Toggle simulation
 async function toggleSimulation() {
     fetch('/api/toggleSimulation', {
         method: 'GET',
@@ -168,15 +176,17 @@ async function toggleSimulation() {
     });
 }
 
+// Stop the pilot
 async function stopPilot(){
     response = await fetch('/api/stopPilot');
     console.log(response)
 }
 
-
+// Update all the readings
 async function updateAll(){
     updateCompass();
     systemStatus();
 }
-// Update readings
+
+// Update readings every 200ms
 setInterval(updateAll, 200);
