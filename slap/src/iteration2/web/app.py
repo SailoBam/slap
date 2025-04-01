@@ -46,7 +46,7 @@ class WebServer:
             return {'trips': trips}
 
         # Template Routes
-        
+
         # Renders the home page
         @app.route("/")
         def home():
@@ -156,7 +156,7 @@ class WebServer:
                 'actual': heading
             }
             return jsonify(headings)
-
+    
         # Adjusts the current heading by a specified amount
         @app.route('/api/addDirection', methods=['PUT'])
         def addDirection():
@@ -188,7 +188,7 @@ class WebServer:
                     self.current_trip = config
                 status = {
                     'status': self.logger.running,
-                    'tripName': "LogName"
+                'tripName': "LogName"
                 }
                 return jsonify(status), 200
             except Exception as e:
@@ -243,13 +243,13 @@ class WebServer:
         def startPilot():
             self.auto_pilot.start()
             return jsonify({'message': 'Pilot started'})
-
+        
         # Stops the autopilot
         @app.route('/api/stopPilot')
         def stopPilot():
             self.auto_pilot.stop()
             return jsonify({'message': 'Pilot stopped'})
-
+        
         # Uploads a trip to Mapbox
         @app.route('/api/uploadTrip/<int:tripId>', methods=['GET'])
         def uploadTrip(tripId):
