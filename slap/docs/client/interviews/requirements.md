@@ -36,6 +36,7 @@ What adjustments would you expect to make to the system as it is running?
 Given that the system is dependant on a GPS, there is  an opportunity to incorporate features from other devices which utilise a GPS such as a trip logger / tracker, can you suggest what features from these devices would be most beneficial if integrated into the auto pilot?
 
 ### Refrences
+
 - https://cdn2.hubspot.net/hubfs/3909610/Gated%20%20Content/Requirement%20Gathering%20Questions.pdf
 
 - https://www.its.leeds.ac.uk/projects/smartest/userq.html
