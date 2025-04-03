@@ -7,10 +7,10 @@ def test_adjust_target_angle(self):
     auto_pilot.setHeading(0)
     
     # Test +10 button
-    heading = auto_pilot.setHeading(auto_pilot.getHeadings()['target'] + 10)
+    heading = auto_pilot.setHeading(auto_pilot.target_heading + 10)
     assert heading == 10
     
     # Test -10 button
-    heading = auto_pilot.setHeading(auto_pilot.getHeadings()['target'] - 10) 
+    heading = auto_pilot.setHeading(auto_pilot.target_heading - 10) 
     assert heading == 0
 

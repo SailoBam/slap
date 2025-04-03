@@ -2,13 +2,14 @@ from services.logger import Logger
 from transducers.gps import Gps
 from services.mapManager import MapManager
 from services.slapStore import Config
-
+from transducers.sensorRegister import SensorRegister
 def test_startStopLogging_creates_new_trip(self):
     """Test that starting and stopping logging creates a new trip"""
     # Create test components
     gps = Gps()
     map_manager = MapManager()
-    logger = Logger(gps, map_manager)
+    sensor_register = SensorRegister()
+    logger = Logger(gps, map_manager, sensor_register)
     logger.setStore(self.store)
 
     # Start logging
