@@ -1,7 +1,7 @@
 ## Introduction
 The SLAP project is to design and build a self steering auto pilot for a sailing boat. The systems basic functions are the same as many existing auto tiller systems. This design will utilise low cost parts and make use of a mobile phone, and a GPS module to achieve a high functioning system.
 
-This questionaire is designed to identify user requirements for an auto pilot system. The questions have been designed to avoid suggesting how the system would function are more about understanding the users true needs.
+This questionnaire is designed to identify user requirements for an auto pilot system. The questions have been designed to avoid suggesting how the system would function are more about understanding the users true needs.
 
 
 ### Background Information
