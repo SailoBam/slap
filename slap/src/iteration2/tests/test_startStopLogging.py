@@ -5,6 +5,11 @@ from services.slapStore import Config
 from transducers.sensorRegister import SensorRegister
 def test_startStopLogging_creates_new_trip(self):
     """Test that starting and stopping logging creates a new trip"""
+    print("--------------------------------")
+    print("")
+    print("UNIT TEST: Logging_StartStop")
+    print("\nTesting starting and stopping logging...")
+    
     # Create test components
     gps = Gps()
     map_manager = MapManager()

@@ -2,6 +2,11 @@ from control.autoPilot import AutoPilot
 
 def test_adjust_target_angle(self):
     """Test that the +/-10 buttons correctly adjust the target angle"""
+    print("--------------------------------")
+    print("")
+    print("UNIT TEST: AutoPilot_Adjust")
+    print("\nTesting adjusting the target angle...")
+    
     # Create test autopilot with initial target angle of 0
     auto_pilot = AutoPilot()
     auto_pilot.setHeading(0)
