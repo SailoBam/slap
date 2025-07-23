@@ -1,0 +1,5 @@
+..\slapReport.ipynb
+..\analysis\analysis.ipynb
+..\design\design.ipynb
+..\technicalSolution\technicalSolution.ipynb
+

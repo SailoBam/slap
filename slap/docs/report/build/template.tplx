@@ -1,0 +1,27 @@
+((*- extends 'base.tex.j2' -*))
+
+((* block packages *))
+\usepackage{cite}
+\usepackage{hyperref}
+((* endblock packages *))
+
+((* block author *))
+\author{Fernando Perez and Brian E. Granger}
+((* endblock author *))
+
+((* block title *))
+\title{Tools for the lifecycle of computational research}
+((* endblock title *))
+
+((* block bibliography *))
+\bibliographystyle{plain}
+\bibliography{ipython}
+((* endblock bibliography *))
+
+((* block document *))
+\maketitle
+((* block body *))
+((* endblock body *))
+\bibliographystyle{plain}
+\bibliography{ipython}
+((* endblock document *))
